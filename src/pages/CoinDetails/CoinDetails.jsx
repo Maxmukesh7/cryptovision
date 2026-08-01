@@ -1,5 +1,6 @@
 import React from 'react'
 import { useParams, Link } from 'react-router-dom'
+import { useApp } from '../../context/AppContext'
 import useCoinDetails from '../../hooks/useCoinDetails'
 import PriceChart from '../../components/PriceChart/PriceChart'
 import Loader from '../../components/Loader/Loader'
@@ -29,6 +30,21 @@ const ExternalLinkIcon = () => (
   </svg>
 )
 
+const StarIcon = ({ filled }) => (
+  <svg
+    width="20"
+    height="20"
+    viewBox="0 0 24 24"
+    fill={filled ? '#f59e0b' : 'none'}
+    stroke={filled ? '#f59e0b' : 'currentColor'}
+    strokeWidth="2"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+  >
+    <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
+  </svg>
+)
+
 function StatCard({ id, label, value, subValue, direction }) {
   return (
     <div id={id} className={styles.statCard}>
@@ -46,6 +62,7 @@ function StatCard({ id, label, value, subValue, direction }) {
 function CoinDetails() {
   const { id } = useParams()
   const { coin, chartData, loading, error, refetch } = useCoinDetails(id)
+  const { isInWatchlist, toggleWatchlist } = useApp()
 
   if (loading) {
     return (
@@ -69,6 +86,7 @@ function CoinDetails() {
 
   if (!coin) return null
 
+  const isFavorite = isInWatchlist(coin.id)
   const market = coin.market_data
   const change24h = market?.price_change_percentage_24h
   const changeDirection = getChangeDirection(change24h)
@@ -156,6 +174,15 @@ function CoinDetails() {
           <ArrowLeftIcon />
           <span>Back to Dashboard</span>
         </Link>
+
+        <button
+          className={styles.watchlistBtn}
+          onClick={() => toggleWatchlist(coin.id, coin.name)}
+          title={isFavorite ? 'Remove from Watchlist' : 'Add to Watchlist'}
+        >
+          <StarIcon filled={isFavorite} />
+          <span>{isFavorite ? 'In Watchlist' : 'Add to Watchlist'}</span>
+        </button>
       </header>
 
       {/* ── Hero ── */}
@@ -213,7 +240,7 @@ function CoinDetails() {
 
       {/* ── Stats Grid ── */}
       <div className={styles.statsGrid}>
-        {statCards.map(card => (
+        {statCards.map((card) => (
           <StatCard key={card.id} {...card} />
         ))}
       </div>
@@ -264,4 +291,4 @@ function CoinDetails() {
   )
 }
 
-export default CoinDetails
+export default React.memo(CoinDetails)

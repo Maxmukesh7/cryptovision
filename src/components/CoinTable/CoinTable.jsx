@@ -1,5 +1,6 @@
 import React, { useState, useMemo } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { useApp } from '../../context/AppContext'
 import { formatCurrency, formatLargeNumber, formatPercent, getChangeDirection } from '../../utils/formatters'
 import styles from './CoinTable.module.css'
 
@@ -17,9 +18,27 @@ const ClearIcon = () => (
   </svg>
 )
 
+const StarIcon = ({ filled }) => (
+  <svg
+    width="16"
+    height="16"
+    viewBox="0 0 24 24"
+    fill={filled ? '#f59e0b' : 'none'}
+    stroke={filled ? '#f59e0b' : 'currentColor'}
+    strokeWidth="2"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+  >
+    <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
+  </svg>
+)
+
 function CoinTable({ coins = [] }) {
   const navigate = useNavigate()
+  const { isInWatchlist, toggleWatchlist, searchHistory, addSearchQuery, clearSearchHistory } = useApp()
+
   const [query, setQuery] = useState('')
+  const [showSuggestions, setShowSuggestions] = useState(false)
   const [sortField, setSortField] = useState('rank') // 'rank' | 'name' | 'price' | 'change' | 'market_cap' | 'volume'
   const [sortOrder, setSortOrder] = useState('asc') // 'asc' | 'desc'
   const [limit, setLimit] = useState(100) // 10 | 25 | 50 | 100
@@ -28,7 +47,6 @@ function CoinTable({ coins = [] }) {
   const processedCoins = useMemo(() => {
     let result = [...coins]
 
-    // Search filter
     const q = query.toLowerCase().trim()
     if (q) {
       result = result.filter(
@@ -38,7 +56,6 @@ function CoinTable({ coins = [] }) {
       )
     }
 
-    // Sort
     result.sort((a, b) => {
       let valA, valB
       switch (sortField) {
@@ -77,6 +94,17 @@ function CoinTable({ coins = [] }) {
     return result.slice(0, limit)
   }, [coins, query, sortField, sortOrder, limit])
 
+  const handleSearchChange = (e) => {
+    setQuery(e.target.value)
+    setShowSuggestions(true)
+  }
+
+  const handleSearchSubmit = (searchVal) => {
+    setQuery(searchVal)
+    setShowSuggestions(false)
+    addSearchQuery(searchVal)
+  }
+
   const handleSort = (field) => {
     if (sortField === field) {
       setSortOrder((prev) => (prev === 'asc' ? 'desc' : 'asc'))
@@ -92,12 +120,14 @@ function CoinTable({ coins = [] }) {
   }
 
   const handleRowClick = (coinId) => {
+    addSearchQuery(query)
     navigate(`/coin/${coinId}`)
   }
 
   const handleKeyDown = (e, coinId) => {
     if (e.key === 'Enter' || e.key === ' ') {
       e.preventDefault()
+      addSearchQuery(query)
       navigate(`/coin/${coinId}`)
     }
   }
@@ -116,7 +146,12 @@ function CoinTable({ coins = [] }) {
             className={styles.searchInput}
             placeholder="Search by name or symbol..."
             value={query}
-            onChange={(e) => setQuery(e.target.value)}
+            onChange={handleSearchChange}
+            onFocus={() => setShowSuggestions(true)}
+            onBlur={() => setTimeout(() => setShowSuggestions(false), 200)}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter') handleSearchSubmit(query)
+            }}
             aria-label="Search coins"
           />
           {query && (
@@ -127,6 +162,33 @@ function CoinTable({ coins = [] }) {
             >
               <ClearIcon />
             </button>
+          )}
+
+          {/* Search Suggestions & Recent Searches Dropdown */}
+          {showSuggestions && searchHistory && searchHistory.length > 0 && !query && (
+            <div className={styles.suggestionsDropdown}>
+              <div className={styles.suggestionsHeader}>
+                <span>Recent Searches</span>
+                <button
+                  className={styles.clearHistoryBtn}
+                  onClick={(e) => {
+                    e.stopPropagation()
+                    clearSearchHistory()
+                  }}
+                >
+                  Clear History
+                </button>
+              </div>
+              {searchHistory.map((item, idx) => (
+                <div
+                  key={idx}
+                  className={styles.suggestionItem}
+                  onClick={() => handleSearchSubmit(item)}
+                >
+                  🔍 {item}
+                </div>
+              ))}
+            </div>
           )}
         </div>
 
@@ -179,6 +241,7 @@ function CoinTable({ coins = [] }) {
         <table className={styles.table} aria-label="Cryptocurrency market data">
           <thead>
             <tr>
+              <th className={styles.thStar}>Fav</th>
               <th className={`${styles.thRank} ${styles.sortableHeader}`} onClick={() => handleSort('rank')}>
                 # {renderSortIndicator('rank')}
               </th>
@@ -203,6 +266,8 @@ function CoinTable({ coins = [] }) {
             {processedCoins.length > 0 ? (
               processedCoins.map((coin) => {
                 const direction = getChangeDirection(coin.price_change_percentage_24h)
+                const isFavorite = isInWatchlist(coin.id)
+
                 return (
                   <tr
                     key={coin.id}
@@ -214,6 +279,22 @@ function CoinTable({ coins = [] }) {
                     role="button"
                     aria-label={`View details for ${coin.name}`}
                   >
+                    <td
+                      className={styles.tdStar}
+                      onClick={(e) => {
+                        e.stopPropagation()
+                        toggleWatchlist(coin.id, coin.name)
+                      }}
+                      title={isFavorite ? 'Remove from Watchlist' : 'Add to Watchlist'}
+                    >
+                      <button
+                        className={styles.starBtn}
+                        aria-label={isFavorite ? `Remove ${coin.name} from watchlist` : `Add ${coin.name} to watchlist`}
+                      >
+                        <StarIcon filled={isFavorite} />
+                      </button>
+                    </td>
+
                     <td className={styles.tdRank}>
                       <span className={styles.rank}>{coin.market_cap_rank}</span>
                     </td>
@@ -260,7 +341,7 @@ function CoinTable({ coins = [] }) {
               })
             ) : (
               <tr>
-                <td colSpan={6} className={styles.emptyRow}>
+                <td colSpan={7} className={styles.emptyRow}>
                   No coins found matching &quot;{query}&quot;
                 </td>
               </tr>

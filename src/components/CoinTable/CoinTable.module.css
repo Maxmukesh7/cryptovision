@@ -77,6 +77,59 @@
   color: var(--color-primary);
 }
 
+/* ── Suggestions Dropdown ── */
+.suggestionsDropdown {
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0;
+  right: 0;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-lg);
+  z-index: 100;
+  padding: 8px 0;
+  animation: fadeIn 0.2s ease-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.suggestionsHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 6px 14px;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--color-text-muted);
+  text-transform: uppercase;
+}
+
+.clearHistoryBtn {
+  font-size: 11px;
+  color: var(--color-primary);
+  font-weight: 600;
+}
+
+.clearHistoryBtn:hover {
+  text-decoration: underline;
+}
+
+.suggestionItem {
+  padding: 8px 14px;
+  font-size: 13px;
+  color: var(--color-text-primary);
+  cursor: pointer;
+  transition: background var(--transition-fast);
+}
+
+.suggestionItem:hover {
+  background: var(--color-surface-alt);
+}
+
 .controlsGroup {
   display: flex;
   align-items: center;
@@ -131,7 +184,7 @@
 .table {
   width: 100%;
   border-collapse: collapse;
-  min-width: 700px;
+  min-width: 740px;
 }
 
 /* ── Head ── */
@@ -149,6 +202,11 @@
   border-bottom: 1px solid var(--color-border);
   white-space: nowrap;
   user-select: none;
+}
+
+.thStar {
+  text-align: center;
+  width: 44px;
 }
 
 .sortableHeader {
@@ -175,7 +233,7 @@
 
 .thRank {
   text-align: center;
-  width: 64px;
+  width: 56px;
 }
 
 .thCoin {
@@ -214,6 +272,27 @@
 
 .table tbody tr:last-child td {
   border-bottom: none;
+}
+
+/* ── Star Cell ── */
+.tdStar {
+  text-align: center;
+}
+
+.starBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto;
+  padding: 4px;
+  border-radius: 50%;
+  color: var(--color-text-muted);
+  transition: transform var(--transition-fast), color var(--transition-fast);
+}
+
+.starBtn:hover {
+  transform: scale(1.2);
+  color: #f59e0b;
 }
 
 /* ── Rank cell ── */

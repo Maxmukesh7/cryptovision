@@ -8,6 +8,7 @@
 .pageHeader {
   display: flex;
   align-items: center;
+  justify-content: space-between;
 }
 
 .backButton {
@@ -30,6 +31,26 @@
   border-color: var(--color-primary);
   background: var(--color-primary-glow);
   transform: translateX(-2px);
+}
+
+.watchlistBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--color-border);
+  background: var(--color-surface);
+  color: var(--color-text-primary);
+  font-size: 14px;
+  font-weight: 600;
+  box-shadow: var(--shadow-sm);
+  transition: all var(--transition-fast);
+}
+
+.watchlistBtn:hover {
+  border-color: #f59e0b;
+  background: rgba(245, 158, 11, 0.08);
 }
 
 /* ── Center state (loading / error) ── */
