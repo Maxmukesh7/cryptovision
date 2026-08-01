@@ -1,0 +1,155 @@
+.moversGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
+}
+
+.moversCard {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: 20px 24px;
+  box-shadow: var(--shadow-md);
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  transition: transform var(--transition-base), box-shadow var(--transition-base);
+}
+
+.moversCard:hover {
+  box-shadow: var(--shadow-lg);
+}
+
+.cardHeader {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.iconWrapper {
+  width: 40px;
+  height: 40px;
+  border-radius: var(--radius-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.gainerIcon {
+  background: var(--color-success-light);
+  color: var(--color-success);
+}
+
+.loserIcon {
+  background: var(--color-danger-light);
+  color: var(--color-danger);
+}
+
+.cardTitle {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--color-text-primary);
+}
+
+.cardSubtitle {
+  font-size: 12px;
+  color: var(--color-text-muted);
+}
+
+.moverList {
+  display: flex;
+  flex-direction: column;
+}
+
+.moverRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 8px;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: background var(--transition-fast);
+
+}
+
+.moverRow:hover {
+  background: var(--color-surface-alt);
+}
+
+.moverRow:focus-visible {
+  outline: 2px solid var(--color-primary);
+}
+
+.coinMeta {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.coinLogo {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  object-fit: contain;
+}
+
+.coinNames {
+  display: flex;
+  flex-direction: column;
+}
+
+.coinName {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--color-text-primary);
+}
+
+.coinSymbol {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--color-text-muted);
+}
+
+.coinPriceBlock {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.coinPrice {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--color-text-primary);
+  font-variant-numeric: tabular-nums;
+}
+
+.changeBadge {
+  padding: 4px 10px;
+  border-radius: 99px;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.positive {
+  color: var(--color-success);
+  background: var(--color-success-light);
+}
+
+.negative {
+  color: var(--color-danger);
+  background: var(--color-danger-light);
+}
+
+.neutral {
+  color: var(--color-text-muted);
+  background: var(--color-surface-alt);
+}
+
+@media (max-width: 768px) {
+  .moversGrid {
+    grid-template-columns: 1fr;
+  }
+}

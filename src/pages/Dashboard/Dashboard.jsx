@@ -1,10 +1,17 @@
 import React, { useMemo } from 'react'
 import useCoins from '../../hooks/useCoins'
 import DashboardCard from '../../components/DashboardCard/DashboardCard'
+import TopMovers from '../../components/TopMovers/TopMovers'
+import DashboardCharts from '../../components/DashboardCharts/DashboardCharts'
 import CoinTable from '../../components/CoinTable/CoinTable'
-import Loader from '../../components/Loader/Loader'
 import ErrorState from '../../components/ErrorState/ErrorState'
-import { formatLargeNumber, formatPercent, average } from '../../utils/formatters'
+import {
+  SkeletonCard,
+  SkeletonTable,
+  SkeletonMovers,
+  SkeletonChart,
+} from '../../components/Skeleton/Skeleton'
+import { formatLargeNumber, formatPercent, formatCurrency } from '../../utils/formatters'
 import styles from './Dashboard.module.css'
 
 const CoinsIcon = () => (
@@ -16,131 +23,224 @@ const CoinsIcon = () => (
   </svg>
 )
 
-const TrophyIcon = () => (
-  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
-    <polyline points="8 21 12 17 16 21" />
-    <path d="M7 4H17L17 11C17 14.3 14.3 17 11 17H13C9.7 17 7 14.3 7 11Z" />
-    <path d="M7 8H3v2a4 4 0 0 0 4 4" />
-    <path d="M17 8h4v2a4 4 0 0 1-4 4" />
-  </svg>
-)
-
-const PriceIcon = () => (
-  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
-    <line x1="12" y1="1" x2="12" y2="23" />
-    <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
-  </svg>
-)
-
-const TrendIcon = () => (
+const MarketCapIcon = () => (
   <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
     <polyline points="22 7 13.5 15.5 8.5 10.5 2 17" />
     <polyline points="16 7 22 7 22 13" />
   </svg>
 )
 
+const VolumeIcon = () => (
+  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+    <path d="M18 20V10" />
+    <path d="M12 20V4" />
+    <path d="M6 20v-6" />
+  </svg>
+)
+
+const DominanceIcon = () => (
+  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+    <circle cx="12" cy="12" r="10" />
+    <path d="M12 2a10 10 0 0 1 10 10h-10z" />
+  </svg>
+)
+
+const TrendingUpIcon = () => (
+  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+    <polyline points="23 6 13.5 15.5 8.5 10.5 1 18" />
+    <polyline points="17 6 23 6 23 12" />
+  </svg>
+)
+
+const TrendingDownIcon = () => (
+  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+    <polyline points="23 18 13.5 8.5 8.5 13.5 1 6" />
+    <polyline points="17 18 23 18 23 12" />
+  </svg>
+)
+
+const RefreshIcon = ({ isSpinning }) => (
+  <svg
+    width="16"
+    height="16"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2"
+    strokeLinecap="round"
+    className={isSpinning ? styles.spinning : ''}
+  >
+    <polyline points="23 4 23 10 17 10" />
+    <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10" />
+  </svg>
+)
+
 function Dashboard() {
-  const { coins, loading, error, refetch } = useCoins()
+  const { coins = [], loading, error, refetch } = useCoins()
 
-  const stats = useMemo(() => {
-    if (!coins.length) return null
+  // 1. Calculate 6 Top Analytics Cards & Movers with useMemo
+  const { cards, gainers, losers } = useMemo(() => {
+    if (!coins || coins.length === 0) {
+      return { cards: [], gainers: [], losers: [] }
+    }
 
+    // Total Cryptocurrencies
     const totalCoins = coins.length
 
-    const topMarketCap = coins.reduce((prev, cur) =>
-      cur.market_cap > prev.market_cap ? cur : prev, coins[0])
+    // Total Market Cap & Total 24H Volume
+    const totalMarketCap = coins.reduce((acc, c) => acc + (c.market_cap || 0), 0)
+    const totalVolume = coins.reduce((acc, c) => acc + (c.total_volume || 0), 0)
 
-    const topPrice = coins.reduce((prev, cur) =>
-      cur.current_price > prev.current_price ? cur : prev, coins[0])
+    // Bitcoin Dominance
+    const btcCoin = coins.find((c) => c.symbol?.toLowerCase() === 'btc')
+    const btcMarketCap = btcCoin?.market_cap || 0
+    const btcDominance = totalMarketCap > 0 ? (btcMarketCap / totalMarketCap) * 100 : 0
 
-    const changes = coins
-      .map(c => c.price_change_percentage_24h)
-      .filter(v => v !== null && v !== undefined)
-    const avgChange = average(changes)
+    // Top Gainers & Losers sorted arrays
+    const sortedByChange = [...coins].sort(
+      (a, b) => (b.price_change_percentage_24h || 0) - (a.price_change_percentage_24h || 0)
+    )
 
-    return { totalCoins, topMarketCap, topPrice, avgChange }
+    const topGainer = sortedByChange[0]
+    const topLoser = sortedByChange[sortedByChange.length - 1]
+
+    const topGainersList = sortedByChange.filter((c) => (c.price_change_percentage_24h || 0) > 0)
+    const topLosersList = [...sortedByChange]
+      .reverse()
+      .filter((c) => (c.price_change_percentage_24h || 0) < 0)
+
+    const cardsData = [
+      {
+        id: 'card-total-coins',
+        title: 'Total Cryptocurrencies',
+        subtitle: 'Listed assets',
+        value: totalCoins.toLocaleString(),
+        icon: <CoinsIcon />,
+        accentColor: '#7c3aed',
+      },
+      {
+        id: 'card-total-market-cap',
+        title: 'Total Market Cap',
+        subtitle: 'Global crypto cap',
+        value: formatLargeNumber(totalMarketCap),
+        icon: <MarketCapIcon />,
+        accentColor: '#1a6fff',
+      },
+      {
+        id: 'card-total-volume',
+        title: 'Total 24H Volume',
+        subtitle: 'Global 24h trading volume',
+        value: formatLargeNumber(totalVolume),
+        icon: <VolumeIcon />,
+        accentColor: '#06b6d4',
+      },
+      {
+        id: 'card-btc-dominance',
+        title: 'Bitcoin Dominance',
+        subtitle: 'BTC market share',
+        value: `${btcDominance.toFixed(1)}%`,
+        icon: <DominanceIcon />,
+        accentColor: '#f59e0b',
+      },
+      {
+        id: 'card-top-gainer',
+        title: 'Top Gainer (24H)',
+        subtitle: topGainer ? `${topGainer.name} (${topGainer.symbol?.toUpperCase()})` : '—',
+        value: topGainer ? formatPercent(topGainer.price_change_percentage_24h) : '—',
+        trend: 'up',
+        trendValue: topGainer ? formatCurrency(topGainer.current_price) : '',
+        icon: <TrendingUpIcon />,
+        accentColor: '#10b981',
+      },
+      {
+        id: 'card-top-loser',
+        title: 'Top Loser (24H)',
+        subtitle: topLoser ? `${topLoser.name} (${topLoser.symbol?.toUpperCase()})` : '—',
+        value: topLoser ? formatPercent(topLoser.price_change_percentage_24h) : '—',
+        trend: 'down',
+        trendValue: topLoser ? formatCurrency(topLoser.current_price) : '',
+        icon: <TrendingDownIcon />,
+        accentColor: '#ef4444',
+      },
+    ]
+
+    return {
+      cards: cardsData,
+      gainers: topGainersList,
+      losers: topLosersList,
+    }
   }, [coins])
-
-  const cards = stats
-    ? [
-        {
-          id: 'card-total-coins',
-          title: 'Total Coins',
-          subtitle: 'Tracked assets',
-          value: stats.totalCoins.toLocaleString(),
-          icon: <CoinsIcon />,
-          accentColor: '#7c3aed',
-        },
-        {
-          id: 'card-top-market-cap',
-          title: 'Top Market Cap',
-          subtitle: stats.topMarketCap.name,
-          value: formatLargeNumber(stats.topMarketCap.market_cap),
-          trend: stats.topMarketCap.price_change_percentage_24h >= 0 ? 'up' : 'down',
-          trendValue: formatPercent(stats.topMarketCap.price_change_percentage_24h),
-          icon: <TrophyIcon />,
-          accentColor: '#f59e0b',
-        },
-        {
-          id: 'card-highest-price',
-          title: 'Highest Price',
-          subtitle: stats.topPrice.name,
-          value: `$${stats.topPrice.current_price.toLocaleString()}`,
-          trend: stats.topPrice.price_change_percentage_24h >= 0 ? 'up' : 'down',
-          trendValue: formatPercent(stats.topPrice.price_change_percentage_24h),
-          icon: <PriceIcon />,
-          accentColor: '#1a6fff',
-        },
-        {
-          id: 'card-avg-change',
-          title: 'Avg 24H Change',
-          subtitle: 'Across all coins',
-          value: formatPercent(stats.avgChange),
-          trend: stats.avgChange >= 0 ? 'up' : 'down',
-          trendValue: stats.avgChange >= 0 ? 'Bullish' : 'Bearish',
-          icon: <TrendIcon />,
-          accentColor: stats.avgChange >= 0 ? '#10b981' : '#ef4444',
-        },
-      ]
-    : []
 
   return (
     <section className={styles.dashboard} aria-labelledby="dashboard-heading">
+      {/* ── Page Header ── */}
       <header className={styles.pageHeader}>
         <div>
-          <h1 id="dashboard-heading" className={styles.pageTitle}>Dashboard</h1>
-          <p className={styles.pageSubtitle}>Live cryptocurrency market data</p>
+          <h1 id="dashboard-heading" className={styles.pageTitle}>Cryptocurrency Market Overview</h1>
+          <p className={styles.pageSubtitle}>Real-time price analytics &amp; market distribution</p>
         </div>
-        <div className={styles.dateBadge}>
-          <span className={styles.liveIndicator} />
-          <span>Live Data</span>
+        <div className={styles.headerActions}>
+          <button
+            id="refresh-data-btn"
+            className={styles.refreshButton}
+            onClick={refetch}
+            disabled={loading}
+            aria-label="Refresh market data"
+          >
+            <RefreshIcon isSpinning={loading} />
+            <span>Refresh</span>
+          </button>
+          <div className={styles.dateBadge}>
+            <span className={styles.liveIndicator} />
+            <span>Live Data</span>
+          </div>
         </div>
       </header>
 
-      {loading && (
-        <div className={styles.loaderWrapper}>
-          <Loader size="lg" label="Fetching market data..." />
+      {/* ── Initial Skeleton Loading State ── */}
+      {loading && coins.length === 0 && (
+        <div className={styles.skeletonGrid}>
+          <div className={styles.cards6Grid}>
+            {Array.from({ length: 6 }).map((_, i) => (
+              <SkeletonCard key={i} />
+            ))}
+          </div>
+          <SkeletonMovers />
+          <SkeletonChart />
+          <SkeletonTable />
         </div>
       )}
 
-      {error && !loading && (
+      {/* ── Error State (Only if no coins available) ── */}
+      {error && !loading && coins.length === 0 && (
         <ErrorState message={error} onRetry={refetch} />
       )}
 
-      {!loading && !error && stats && (
+      {/* ── Main Content ── */}
+      {coins.length > 0 && (
         <>
-          <div className={styles.cardsGrid}>
-            {cards.map(card => (
+          {/* 1. Six Analytics Cards */}
+          <div className={styles.cards6Grid}>
+            {cards.map((card) => (
               <DashboardCard key={card.id} {...card} />
             ))}
           </div>
 
+          {/* 2. Top Gainers & Top Losers */}
+          <TopMovers gainers={gainers} losers={losers} />
+
+          {/* 3. Market Analytics Charts (Bar, Doughnut, Line) */}
+          <DashboardCharts coins={coins} />
+
+          {/* 4. Cryptocurrency Market Table */}
           <div className={styles.tableSection}>
             <div className={styles.tableSectionHeader}>
-              <h2 className={styles.sectionTitle}>Top 100 Cryptocurrencies</h2>
-              <p className={styles.sectionSubtitle}>
-                Ranked by market capitalization
-              </p>
+              <div>
+                <h2 className={styles.sectionTitle}>Cryptocurrency Market Rankings</h2>
+                <p className={styles.sectionSubtitle}>
+                  Top assets ranked by market capitalization and 24h volume
+                </p>
+              </div>
             </div>
             <CoinTable coins={coins} />
           </div>

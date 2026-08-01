@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useMemo } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { formatCurrency, formatLargeNumber, formatPercent, getChangeDirection } from '../../utils/formatters'
 import styles from './CoinTable.module.css'
@@ -17,18 +17,79 @@ const ClearIcon = () => (
   </svg>
 )
 
-function CoinTable({ coins }) {
+function CoinTable({ coins = [] }) {
   const navigate = useNavigate()
   const [query, setQuery] = useState('')
+  const [sortField, setSortField] = useState('rank') // 'rank' | 'name' | 'price' | 'change' | 'market_cap' | 'volume'
+  const [sortOrder, setSortOrder] = useState('asc') // 'asc' | 'desc'
+  const [limit, setLimit] = useState(100) // 10 | 25 | 50 | 100
 
-  const filteredCoins = coins.filter(coin => {
+  // 1. Filtering & Sorting with useMemo
+  const processedCoins = useMemo(() => {
+    let result = [...coins]
+
+    // Search filter
     const q = query.toLowerCase().trim()
-    if (!q) return true
-    return (
-      coin.name.toLowerCase().includes(q) ||
-      coin.symbol.toLowerCase().includes(q)
-    )
-  })
+    if (q) {
+      result = result.filter(
+        (coin) =>
+          coin.name.toLowerCase().includes(q) ||
+          coin.symbol.toLowerCase().includes(q)
+      )
+    }
+
+    // Sort
+    result.sort((a, b) => {
+      let valA, valB
+      switch (sortField) {
+        case 'name':
+          valA = a.name.toLowerCase()
+          valB = b.name.toLowerCase()
+          break
+        case 'price':
+          valA = a.current_price ?? 0
+          valB = b.current_price ?? 0
+          break
+        case 'change':
+          valA = a.price_change_percentage_24h ?? 0
+          valB = b.price_change_percentage_24h ?? 0
+          break
+        case 'market_cap':
+          valA = a.market_cap ?? 0
+          valB = b.market_cap ?? 0
+          break
+        case 'volume':
+          valA = a.total_volume ?? 0
+          valB = b.total_volume ?? 0
+          break
+        case 'rank':
+        default:
+          valA = a.market_cap_rank ?? 999
+          valB = b.market_cap_rank ?? 999
+          break
+      }
+
+      if (valA < valB) return sortOrder === 'asc' ? -1 : 1
+      if (valA > valB) return sortOrder === 'asc' ? 1 : -1
+      return 0
+    })
+
+    return result.slice(0, limit)
+  }, [coins, query, sortField, sortOrder, limit])
+
+  const handleSort = (field) => {
+    if (sortField === field) {
+      setSortOrder((prev) => (prev === 'asc' ? 'desc' : 'asc'))
+    } else {
+      setSortField(field)
+      setSortOrder(field === 'rank' || field === 'name' ? 'asc' : 'desc')
+    }
+  }
+
+  const renderSortIndicator = (field) => {
+    if (sortField !== field) return <span className={styles.sortArrowInactive}>↕</span>
+    return <span className={styles.sortArrowActive}>{sortOrder === 'asc' ? '▲' : '▼'}</span>
+  }
 
   const handleRowClick = (coinId) => {
     navigate(`/coin/${coinId}`)
@@ -43,6 +104,7 @@ function CoinTable({ coins }) {
 
   return (
     <div className={styles.wrapper}>
+      {/* ── Toolbar ── */}
       <div className={styles.toolbar}>
         <div className={styles.searchContainer}>
           <span className={styles.searchIcon}>
@@ -54,7 +116,7 @@ function CoinTable({ coins }) {
             className={styles.searchInput}
             placeholder="Search by name or symbol..."
             value={query}
-            onChange={e => setQuery(e.target.value)}
+            onChange={(e) => setQuery(e.target.value)}
             aria-label="Search coins"
           />
           {query && (
@@ -67,28 +129,79 @@ function CoinTable({ coins }) {
             </button>
           )}
         </div>
-        <p className={styles.resultCount} aria-live="polite">
-          {filteredCoins.length === coins.length
-            ? `${coins.length} coins`
-            : `${filteredCoins.length} of ${coins.length} coins`}
-        </p>
+
+        <div className={styles.controlsGroup}>
+          <div className={styles.selectWrapper}>
+            <label htmlFor="sort-select" className={styles.selectLabel}>Sort:</label>
+            <select
+              id="sort-select"
+              className={styles.selectInput}
+              value={`${sortField}-${sortOrder}`}
+              onChange={(e) => {
+                const [f, o] = e.target.value.split('-')
+                setSortField(f)
+                setSortOrder(o)
+              }}
+            >
+              <option value="rank-asc">Rank (1 → 100)</option>
+              <option value="market_cap-desc">Market Cap (High → Low)</option>
+              <option value="price-desc">Price (High → Low)</option>
+              <option value="price-asc">Price (Low → High)</option>
+              <option value="change-desc">24h Change (Highest)</option>
+              <option value="change-asc">24h Change (Lowest)</option>
+              <option value="name-asc">Alphabetical (A → Z)</option>
+            </select>
+          </div>
+
+          <div className={styles.selectWrapper}>
+            <label htmlFor="limit-select" className={styles.selectLabel}>Show:</label>
+            <select
+              id="limit-select"
+              className={styles.selectInput}
+              value={limit}
+              onChange={(e) => setLimit(Number(e.target.value))}
+            >
+              <option value={10}>Top 10</option>
+              <option value={25}>Top 25</option>
+              <option value={50}>Top 50</option>
+              <option value={100}>Top 100</option>
+            </select>
+          </div>
+
+          <p className={styles.resultCount} aria-live="polite">
+            Showing {processedCoins.length} of {coins.length}
+          </p>
+        </div>
       </div>
 
+      {/* ── Table ── */}
       <div className={styles.tableScroll}>
         <table className={styles.table} aria-label="Cryptocurrency market data">
           <thead>
             <tr>
-              <th className={styles.thRank}>#</th>
-              <th className={styles.thCoin}>Coin</th>
-              <th className={styles.thNumeric}>Price</th>
-              <th className={styles.thNumeric}>24h Change</th>
-              <th className={styles.thNumeric}>Market Cap</th>
-              <th className={styles.thNumeric}>24h Volume</th>
+              <th className={`${styles.thRank} ${styles.sortableHeader}`} onClick={() => handleSort('rank')}>
+                # {renderSortIndicator('rank')}
+              </th>
+              <th className={`${styles.thCoin} ${styles.sortableHeader}`} onClick={() => handleSort('name')}>
+                Coin {renderSortIndicator('name')}
+              </th>
+              <th className={`${styles.thNumeric} ${styles.sortableHeader}`} onClick={() => handleSort('price')}>
+                Price {renderSortIndicator('price')}
+              </th>
+              <th className={`${styles.thNumeric} ${styles.sortableHeader}`} onClick={() => handleSort('change')}>
+                24h Change {renderSortIndicator('change')}
+              </th>
+              <th className={`${styles.thNumeric} ${styles.sortableHeader}`} onClick={() => handleSort('market_cap')}>
+                Market Cap {renderSortIndicator('market_cap')}
+              </th>
+              <th className={`${styles.thNumeric} ${styles.sortableHeader}`} onClick={() => handleSort('volume')}>
+                24h Volume {renderSortIndicator('volume')}
+              </th>
             </tr>
           </thead>
           <tbody>
-            {filteredCoins.length > 0 ? (
-              filteredCoins.map(coin => {
+            {processedCoins.length > 0 ? (
+              processedCoins.map((coin) => {
                 const direction = getChangeDirection(coin.price_change_percentage_24h)
                 return (
                   <tr
@@ -96,7 +209,7 @@ function CoinTable({ coins }) {
                     id={`row-${coin.id}`}
                     className={styles.row}
                     onClick={() => handleRowClick(coin.id)}
-                    onKeyDown={e => handleKeyDown(e, coin.id)}
+                    onKeyDown={(e) => handleKeyDown(e, coin.id)}
                     tabIndex={0}
                     role="button"
                     aria-label={`View details for ${coin.name}`}
@@ -114,11 +227,13 @@ function CoinTable({ coins }) {
                           width={32}
                           height={32}
                           loading="lazy"
-                          onError={e => { e.currentTarget.style.display = 'none' }}
+                          onError={(e) => {
+                            e.currentTarget.style.display = 'none'
+                          }}
                         />
                         <div className={styles.coinMeta}>
                           <span className={styles.coinName}>{coin.name}</span>
-                          <span className={styles.coinSymbol}>{coin.symbol.toUpperCase()}</span>
+                          <span className={styles.coinSymbol}>{coin.symbol?.toUpperCase()}</span>
                         </div>
                       </div>
                     </td>
@@ -157,4 +272,4 @@ function CoinTable({ coins }) {
   )
 }
 
-export default CoinTable
+export default React.memo(CoinTable)
