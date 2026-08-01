@@ -1,0 +1,214 @@
+.widgetsGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
+}
+
+.widgetCard {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: 20px 24px;
+  box-shadow: var(--shadow-md);
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.widgetHeader {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.iconBadge {
+  width: 40px;
+  height: 40px;
+  border-radius: var(--radius-md);
+  background: var(--color-primary-glow);
+  color: var(--color-primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.zapIcon {
+  background: rgba(245, 158, 11, 0.12);
+  color: #f59e0b;
+}
+
+.widgetTitle {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--color-text-primary);
+}
+
+.widgetSubtitle {
+  font-size: 12px;
+  color: var(--color-text-muted);
+}
+
+.sentimentBody {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.statusDisplay {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.statusLabel {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--color-text-secondary);
+}
+
+.statusPill {
+  padding: 4px 12px;
+  border-radius: 99px;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.bullishStatus {
+  background: var(--color-success-light);
+  color: var(--color-success);
+}
+
+.bearishStatus {
+  background: var(--color-danger-light);
+  color: var(--color-danger);
+}
+
+.neutralStatus {
+  background: var(--color-surface-alt);
+  color: var(--color-text-muted);
+}
+
+.meterBar {
+  display: flex;
+  height: 10px;
+  border-radius: 99px;
+  overflow: hidden;
+  background: var(--color-surface-alt);
+}
+
+.bullishBar {
+  background: var(--color-success);
+  transition: width 0.4s ease;
+}
+
+.bearishBar {
+  background: var(--color-danger);
+  transition: width 0.4s ease;
+}
+
+.pctRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--color-text-secondary);
+}
+
+.pctItem {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.dotBullish {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--color-success);
+}
+
+.dotBearish {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--color-danger);
+}
+
+.quickGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+}
+
+.quickItem {
+  background: var(--color-surface-alt);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  cursor: pointer;
+  transition: background var(--transition-fast), transform var(--transition-fast);
+}
+
+.quickItem:hover {
+  background: var(--color-surface);
+  transform: translateY(-1px);
+}
+
+.quickLabel {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--color-text-muted);
+  text-transform: uppercase;
+}
+
+.quickCoin {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.miniLogo {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+}
+
+.quickName {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--color-text-primary);
+}
+
+.positiveVal {
+  margin-left: auto;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--color-success);
+}
+
+.negativeVal {
+  margin-left: auto;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--color-danger);
+}
+
+.neutralVal {
+  margin-left: auto;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--color-text-primary);
+}
+
+@media (max-width: 768px) {
+  .widgetsGrid {
+    grid-template-columns: 1fr;
+  }
+}

@@ -1,5 +1,10 @@
 import React, { useMemo } from 'react'
 import useCoins from '../../hooks/useCoins'
+import { useAutoRefresh } from '../../hooks/useAutoRefresh'
+import GlobalOverview from '../../components/GlobalOverview/GlobalOverview'
+import TrendingCoins from '../../components/TrendingCoins/TrendingCoins'
+import MarketSentiment from '../../components/MarketSentiment/MarketSentiment'
+import CryptoNews from '../../components/CryptoNews/CryptoNews'
 import DashboardCard from '../../components/DashboardCard/DashboardCard'
 import TopMovers from '../../components/TopMovers/TopMovers'
 import DashboardCharts from '../../components/DashboardCharts/DashboardCharts'
@@ -78,25 +83,23 @@ const RefreshIcon = ({ isSpinning }) => (
 function Dashboard() {
   const { coins = [], loading, error, refetch } = useCoins()
 
-  // 1. Calculate 6 Top Analytics Cards & Movers with useMemo
+  // 60-Second Auto Refresh with cleanup and collision protection
+  useAutoRefresh(refetch, 60000)
+
+  // Calculate 6 Top Analytics Cards & Movers with useMemo
   const { cards, gainers, losers } = useMemo(() => {
     if (!coins || coins.length === 0) {
       return { cards: [], gainers: [], losers: [] }
     }
 
-    // Total Cryptocurrencies
     const totalCoins = coins.length
-
-    // Total Market Cap & Total 24H Volume
     const totalMarketCap = coins.reduce((acc, c) => acc + (c.market_cap || 0), 0)
     const totalVolume = coins.reduce((acc, c) => acc + (c.total_volume || 0), 0)
 
-    // Bitcoin Dominance
     const btcCoin = coins.find((c) => c.symbol?.toLowerCase() === 'btc')
     const btcMarketCap = btcCoin?.market_cap || 0
     const btcDominance = totalMarketCap > 0 ? (btcMarketCap / totalMarketCap) * 100 : 0
 
-    // Top Gainers & Losers sorted arrays
     const sortedByChange = [...coins].sort(
       (a, b) => (b.price_change_percentage_24h || 0) - (a.price_change_percentage_24h || 0)
     )
@@ -176,8 +179,8 @@ function Dashboard() {
       {/* ── Page Header ── */}
       <header className={styles.pageHeader}>
         <div>
-          <h1 id="dashboard-heading" className={styles.pageTitle}>Cryptocurrency Market Overview</h1>
-          <p className={styles.pageSubtitle}>Real-time price analytics &amp; market distribution</p>
+          <h1 id="dashboard-heading" className={styles.pageTitle}>Cryptocurrency Market Analytics</h1>
+          <p className={styles.pageSubtitle}>Real-time global metrics, trending coins &amp; market intelligence</p>
         </div>
         <div className={styles.headerActions}>
           <button
@@ -192,7 +195,7 @@ function Dashboard() {
           </button>
           <div className={styles.dateBadge}>
             <span className={styles.liveIndicator} />
-            <span>Live Data</span>
+            <span>Auto-Refresh 60s</span>
           </div>
         </div>
       </header>
@@ -219,20 +222,22 @@ function Dashboard() {
       {/* ── Main Content ── */}
       {coins.length > 0 && (
         <>
-          {/* 1. Six Analytics Cards */}
-          <div className={styles.cards6Grid}>
-            {cards.map((card) => (
-              <DashboardCard key={card.id} {...card} />
-            ))}
-          </div>
+          {/* 1. Global Market Overview Section */}
+          <GlobalOverview coins={coins} />
 
-          {/* 2. Top Gainers & Top Losers */}
+          {/* 2. Trending Coins Section */}
+          <TrendingCoins coins={coins} />
+
+          {/* 3. Market Sentiment & Quick Highlights Widgets */}
+          <MarketSentiment coins={coins} />
+
+          {/* 4. Top Gainers & Top Losers */}
           <TopMovers gainers={gainers} losers={losers} />
 
-          {/* 3. Market Analytics Charts (Bar, Doughnut, Line) */}
+          {/* 5. Market Analytics Charts (Bar, Doughnut, Line) */}
           <DashboardCharts coins={coins} />
 
-          {/* 4. Cryptocurrency Market Table */}
+          {/* 6. Cryptocurrency Market Table */}
           <div className={styles.tableSection}>
             <div className={styles.tableSectionHeader}>
               <div>
@@ -244,6 +249,9 @@ function Dashboard() {
             </div>
             <CoinTable coins={coins} />
           </div>
+
+          {/* 7. Latest Crypto News Section */}
+          <CryptoNews />
         </>
       )}
     </section>
