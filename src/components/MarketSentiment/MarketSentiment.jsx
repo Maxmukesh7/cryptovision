@@ -1,6 +1,7 @@
 import React from 'react'
 import { useNavigate } from 'react-router-dom'
-import { formatCurrency, formatLargeNumber, formatPercent } from '../../utils/formatters'
+import { useApp } from '../../context/AppContext'
+import { formatPercent } from '../../utils/formatters'
 import styles from './MarketSentiment.module.css'
 
 const GaugeIcon = () => (
@@ -24,10 +25,10 @@ const ZapIcon = () => (
 
 function MarketSentiment({ coins = [] }) {
   const navigate = useNavigate()
+  const { formatLargeNumber } = useApp()
 
   if (!coins || coins.length === 0) return null
 
-  // Calculate market sentiment based on 24h changes
   const positiveCoins = coins.filter((c) => (c.price_change_percentage_24h || 0) > 0)
   const bullishPct = Math.round((positiveCoins.length / coins.length) * 100)
   const bearishPct = 100 - bullishPct
@@ -42,7 +43,6 @@ function MarketSentiment({ coins = [] }) {
     statusColorClass = styles.bearishStatus
   }
 
-  // Quick stats calculations
   const sortedByChange = [...coins].sort(
     (a, b) => (b.price_change_percentage_24h || 0) - (a.price_change_percentage_24h || 0)
   )

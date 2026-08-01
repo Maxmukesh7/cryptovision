@@ -5,6 +5,7 @@ import { useAutoRefresh } from '../../hooks/useAutoRefresh'
 import GlobalOverview from '../../components/GlobalOverview/GlobalOverview'
 import TrendingCoins from '../../components/TrendingCoins/TrendingCoins'
 import MarketSentiment from '../../components/MarketSentiment/MarketSentiment'
+import DashboardStats from '../../components/DashboardStats/DashboardStats'
 import CryptoNews from '../../components/CryptoNews/CryptoNews'
 import DashboardCard from '../../components/DashboardCard/DashboardCard'
 import TopMovers from '../../components/TopMovers/TopMovers'
@@ -84,7 +85,7 @@ const RefreshIcon = ({ isSpinning }) => (
 
 function Dashboard() {
   const { coins = [], loading, error, refetch } = useCoins()
-  const { dashboardLayout, refreshInterval } = useApp()
+  const { dashboardLayout, refreshInterval, currency } = useApp()
 
   // Auto Refresh based on user setting
   useAutoRefresh(refetch, refreshInterval)
@@ -126,17 +127,17 @@ function Dashboard() {
       },
       {
         id: 'card-total-market-cap',
-        title: 'Total Market Cap',
+        title: `Total Market Cap (${currency})`,
         subtitle: 'Global crypto cap',
-        value: formatLargeNumber(totalMarketCap),
+        value: formatLargeNumber(totalMarketCap, currency),
         icon: <MarketCapIcon />,
         accentColor: '#1a6fff',
       },
       {
         id: 'card-total-volume',
-        title: 'Total 24H Volume',
+        title: `Total 24H Volume (${currency})`,
         subtitle: 'Global 24h trading volume',
-        value: formatLargeNumber(totalVolume),
+        value: formatLargeNumber(totalVolume, currency),
         icon: <VolumeIcon />,
         accentColor: '#06b6d4',
       },
@@ -154,7 +155,7 @@ function Dashboard() {
         subtitle: topGainer ? `${topGainer.name} (${topGainer.symbol?.toUpperCase()})` : '—',
         value: topGainer ? formatPercent(topGainer.price_change_percentage_24h) : '—',
         trend: 'up',
-        trendValue: topGainer ? formatCurrency(topGainer.current_price) : '',
+        trendValue: topGainer ? formatCurrency(topGainer.current_price, 2, currency) : '',
         icon: <TrendingUpIcon />,
         accentColor: '#10b981',
       },
@@ -164,7 +165,7 @@ function Dashboard() {
         subtitle: topLoser ? `${topLoser.name} (${topLoser.symbol?.toUpperCase()})` : '—',
         value: topLoser ? formatPercent(topLoser.price_change_percentage_24h) : '—',
         trend: 'down',
-        trendValue: topLoser ? formatCurrency(topLoser.current_price) : '',
+        trendValue: topLoser ? formatCurrency(topLoser.current_price, 2, currency) : '',
         icon: <TrendingDownIcon />,
         accentColor: '#ef4444',
       },
@@ -175,7 +176,7 @@ function Dashboard() {
       gainers: topGainersList,
       losers: topLosersList,
     }
-  }, [coins])
+  }, [coins, currency])
 
   return (
     <section className={styles.dashboard} aria-labelledby="dashboard-heading">
@@ -235,20 +236,23 @@ function Dashboard() {
           {/* 3. Market Sentiment & Quick Highlights Widgets */}
           {dashboardLayout.marketSentiment && <MarketSentiment coins={coins} />}
 
-          {/* 4. Top Gainers & Top Losers */}
+          {/* 4. Dashboard Detailed Statistics Section */}
+          <DashboardStats coins={coins} />
+
+          {/* 5. Top Gainers & Top Losers */}
           {dashboardLayout.topMovers && <TopMovers gainers={gainers} losers={losers} />}
 
-          {/* 5. Market Analytics Charts (Bar, Doughnut, Line) */}
+          {/* 6. Market Analytics Charts (Bar, Doughnut, Line) */}
           {dashboardLayout.marketCharts && <DashboardCharts coins={coins} />}
 
-          {/* 6. Cryptocurrency Market Table */}
+          {/* 7. Cryptocurrency Market Table */}
           {dashboardLayout.marketTable && (
             <div className={styles.tableSection}>
               <div className={styles.tableSectionHeader}>
                 <div>
                   <h2 className={styles.sectionTitle}>Cryptocurrency Market Rankings</h2>
                   <p className={styles.sectionSubtitle}>
-                    Top assets ranked by market capitalization and 24h volume
+                    Top assets ranked by market capitalization and 24h volume ({currency})
                   </p>
                 </div>
               </div>
@@ -256,7 +260,7 @@ function Dashboard() {
             </div>
           )}
 
-          {/* 7. Latest Crypto News Section */}
+          {/* 8. Latest Crypto News Section */}
           {dashboardLayout.cryptoNews && <CryptoNews />}
         </>
       )}

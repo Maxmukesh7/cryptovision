@@ -56,7 +56,6 @@
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   gap: 12px;
-
 }
 
 .themeBox {
@@ -155,6 +154,18 @@
 .exportBtn:hover {
   border-color: var(--color-primary);
   color: var(--color-primary);
+}
+
+.pdfBtn {
+  background: var(--color-primary-glow);
+  border-color: var(--color-primary-light);
+  color: var(--color-primary);
+}
+
+.pdfBtn:hover {
+  background: var(--color-primary);
+  color: #ffffff;
+  border-color: var(--color-primary);
 }
 
 .resetBtn {

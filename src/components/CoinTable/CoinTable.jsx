@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react'
+import React, { useState, useMemo, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useApp } from '../../context/AppContext'
 import { formatCurrency, formatLargeNumber, formatPercent, getChangeDirection } from '../../utils/formatters'
@@ -15,6 +15,12 @@ const ClearIcon = () => (
   <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
     <line x1="18" y1="6" x2="6" y2="18" />
     <line x1="6" y1="6" x2="18" y2="18" />
+  </svg>
+)
+
+const FilterIcon = () => (
+  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+    <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3" />
   </svg>
 )
 
@@ -35,18 +41,44 @@ const StarIcon = ({ filled }) => (
 
 function CoinTable({ coins = [] }) {
   const navigate = useNavigate()
-  const { isInWatchlist, toggleWatchlist, searchHistory, addSearchQuery, clearSearchHistory } = useApp()
+  const { currency, isInWatchlist, toggleWatchlist, searchHistory, addSearchQuery, clearSearchHistory } = useApp()
 
   const [query, setQuery] = useState('')
   const [showSuggestions, setShowSuggestions] = useState(false)
+  const [showAdvancedFilters, setShowAdvancedFilters] = useState(false)
+
+  // Advanced Filters State
+  const [changeCategory, setChangeCategory] = useState('all') // 'all' | 'gainers' | 'losers'
+  const [minPrice, setMinPrice] = useState('')
+  const [maxPrice, setMaxPrice] = useState('')
+
   const [sortField, setSortField] = useState('rank') // 'rank' | 'name' | 'price' | 'change' | 'market_cap' | 'volume'
   const [sortOrder, setSortOrder] = useState('asc') // 'asc' | 'desc'
   const [limit, setLimit] = useState(100) // 10 | 25 | 50 | 100
 
-  // 1. Filtering & Sorting with useMemo
+  // Keyboard Shortcuts: Ctrl+K (Focus Search), Esc (Clear/Blur)
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k') {
+        e.preventDefault()
+        const input = document.getElementById('coin-search')
+        if (input) input.focus()
+      }
+      if (e.key === 'Escape') {
+        setQuery('')
+        setShowSuggestions(false)
+        setShowAdvancedFilters(false)
+      }
+    }
+    window.addEventListener('keydown', handleKeyDown)
+    return () => window.removeEventListener('keydown', handleKeyDown)
+  }, [])
+
+  // Simultaneous Multi-Filtering & Sorting with useMemo
   const processedCoins = useMemo(() => {
     let result = [...coins]
 
+    // 1. Search Query Filter
     const q = query.toLowerCase().trim()
     if (q) {
       result = result.filter(
@@ -56,6 +88,22 @@ function CoinTable({ coins = [] }) {
       )
     }
 
+    // 2. Change Category Filter (Gainers vs Losers)
+    if (changeCategory === 'gainers') {
+      result = result.filter((c) => (c.price_change_percentage_24h || 0) > 0)
+    } else if (changeCategory === 'losers') {
+      result = result.filter((c) => (c.price_change_percentage_24h || 0) < 0)
+    }
+
+    // 3. Price Range Filter
+    if (minPrice !== '' && !isNaN(minPrice)) {
+      result = result.filter((c) => (c.current_price || 0) >= Number(minPrice))
+    }
+    if (maxPrice !== '' && !isNaN(maxPrice)) {
+      result = result.filter((c) => (c.current_price || 0) <= Number(maxPrice))
+    }
+
+    // 4. Multi-Field Sorting
     result.sort((a, b) => {
       let valA, valB
       switch (sortField) {
@@ -92,7 +140,7 @@ function CoinTable({ coins = [] }) {
     })
 
     return result.slice(0, limit)
-  }, [coins, query, sortField, sortOrder, limit])
+  }, [coins, query, changeCategory, minPrice, maxPrice, sortField, sortOrder, limit])
 
   const handleSearchChange = (e) => {
     setQuery(e.target.value)
@@ -124,17 +172,9 @@ function CoinTable({ coins = [] }) {
     navigate(`/coin/${coinId}`)
   }
 
-  const handleKeyDown = (e, coinId) => {
-    if (e.key === 'Enter' || e.key === ' ') {
-      e.preventDefault()
-      addSearchQuery(query)
-      navigate(`/coin/${coinId}`)
-    }
-  }
-
   return (
     <div className={styles.wrapper}>
-      {/* ── Toolbar ── */}
+      {/* ── Main Toolbar ── */}
       <div className={styles.toolbar}>
         <div className={styles.searchContainer}>
           <span className={styles.searchIcon}>
@@ -144,7 +184,7 @@ function CoinTable({ coins = [] }) {
             id="coin-search"
             type="search"
             className={styles.searchInput}
-            placeholder="Search by name or symbol..."
+            placeholder="Search by name or symbol (Ctrl+K)..."
             value={query}
             onChange={handleSearchChange}
             onFocus={() => setShowSuggestions(true)}
@@ -164,7 +204,7 @@ function CoinTable({ coins = [] }) {
             </button>
           )}
 
-          {/* Search Suggestions & Recent Searches Dropdown */}
+          {/* Search Suggestions & Recent Searches */}
           {showSuggestions && searchHistory && searchHistory.length > 0 && !query && (
             <div className={styles.suggestionsDropdown}>
               <div className={styles.suggestionsHeader}>
@@ -193,6 +233,14 @@ function CoinTable({ coins = [] }) {
         </div>
 
         <div className={styles.controlsGroup}>
+          <button
+            className={`${styles.filterToggleBtn} ${showAdvancedFilters ? styles.filterToggleActive : ''}`}
+            onClick={() => setShowAdvancedFilters((prev) => !prev)}
+          >
+            <FilterIcon />
+            <span>Filters</span>
+          </button>
+
           <div className={styles.selectWrapper}>
             <label htmlFor="sort-select" className={styles.selectLabel}>Sort:</label>
             <select
@@ -236,6 +284,70 @@ function CoinTable({ coins = [] }) {
         </div>
       </div>
 
+      {/* ── Advanced Filters Collapsible Panel ── */}
+      {showAdvancedFilters && (
+        <div className={styles.advancedFiltersPanel}>
+          <div className={styles.filterGroup}>
+            <label className={styles.filterLabel}>Movement Category:</label>
+            <div className={styles.chipGroup}>
+              <button
+                className={`${styles.chip} ${changeCategory === 'all' ? styles.chipActive : ''}`}
+                onClick={() => setChangeCategory('all')}
+              >
+                All
+              </button>
+              <button
+                className={`${styles.chip} ${changeCategory === 'gainers' ? styles.chipActive : ''}`}
+                onClick={() => setChangeCategory('gainers')}
+              >
+                Gainers Only
+              </button>
+              <button
+                className={`${styles.chip} ${changeCategory === 'losers' ? styles.chipActive : ''}`}
+                onClick={() => setChangeCategory('losers')}
+              >
+                Losers Only
+              </button>
+            </div>
+          </div>
+
+          <div className={styles.filterGroup}>
+            <label className={styles.filterLabel}>Min Price ($):</label>
+            <input
+              type="number"
+              className={styles.filterInput}
+              placeholder="e.g. 1.00"
+              value={minPrice}
+              onChange={(e) => setMinPrice(e.target.value)}
+            />
+          </div>
+
+          <div className={styles.filterGroup}>
+            <label className={styles.filterLabel}>Max Price ($):</label>
+            <input
+              type="number"
+              className={styles.filterInput}
+              placeholder="e.g. 1000.00"
+              value={maxPrice}
+              onChange={(e) => setMaxPrice(e.target.value)}
+            />
+          </div>
+
+          {(minPrice || maxPrice || changeCategory !== 'all') && (
+            <button
+              className={styles.resetFiltersBtn}
+              onClick={() => {
+                setMinPrice('')
+                setMaxPrice('')
+                setChangeCategory('all')
+              }}
+            >
+              Reset Filters
+            </button>
+          )}
+        </div>
+      )}
+
       {/* ── Table ── */}
       <div className={styles.tableScroll}>
         <table className={styles.table} aria-label="Cryptocurrency market data">
@@ -249,16 +361,16 @@ function CoinTable({ coins = [] }) {
                 Coin {renderSortIndicator('name')}
               </th>
               <th className={`${styles.thNumeric} ${styles.sortableHeader}`} onClick={() => handleSort('price')}>
-                Price {renderSortIndicator('price')}
+                Price ({currency}) {renderSortIndicator('price')}
               </th>
               <th className={`${styles.thNumeric} ${styles.sortableHeader}`} onClick={() => handleSort('change')}>
                 24h Change {renderSortIndicator('change')}
               </th>
               <th className={`${styles.thNumeric} ${styles.sortableHeader}`} onClick={() => handleSort('market_cap')}>
-                Market Cap {renderSortIndicator('market_cap')}
+                Market Cap ({currency}) {renderSortIndicator('market_cap')}
               </th>
               <th className={`${styles.thNumeric} ${styles.sortableHeader}`} onClick={() => handleSort('volume')}>
-                24h Volume {renderSortIndicator('volume')}
+                24h Volume ({currency}) {renderSortIndicator('volume')}
               </th>
             </tr>
           </thead>
@@ -274,7 +386,6 @@ function CoinTable({ coins = [] }) {
                     id={`row-${coin.id}`}
                     className={styles.row}
                     onClick={() => handleRowClick(coin.id)}
-                    onKeyDown={(e) => handleKeyDown(e, coin.id)}
                     tabIndex={0}
                     role="button"
                     aria-label={`View details for ${coin.name}`}
@@ -320,7 +431,7 @@ function CoinTable({ coins = [] }) {
                     </td>
 
                     <td className={styles.tdNumeric}>
-                      {formatCurrency(coin.current_price)}
+                      {formatCurrency(coin.current_price, 2, currency)}
                     </td>
 
                     <td className={styles.tdNumeric}>
@@ -330,11 +441,11 @@ function CoinTable({ coins = [] }) {
                     </td>
 
                     <td className={styles.tdNumeric}>
-                      {formatLargeNumber(coin.market_cap)}
+                      {formatLargeNumber(coin.market_cap, currency)}
                     </td>
 
                     <td className={styles.tdNumeric}>
-                      {formatLargeNumber(coin.total_volume)}
+                      {formatLargeNumber(coin.total_volume, currency)}
                     </td>
                   </tr>
                 )
@@ -342,7 +453,7 @@ function CoinTable({ coins = [] }) {
             ) : (
               <tr>
                 <td colSpan={7} className={styles.emptyRow}>
-                  No coins found matching &quot;{query}&quot;
+                  No coins found matching your filter criteria.
                 </td>
               </tr>
             )}

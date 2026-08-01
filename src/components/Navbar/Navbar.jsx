@@ -31,7 +31,15 @@ const MoonIcon = () => (
 )
 
 function Navbar({ onToggleSidebar }) {
-  const { theme, toggleTheme } = useApp()
+  const { theme, toggleTheme, currency, setCurrency } = useApp()
+
+  const handleShortcutClick = () => {
+    const searchInput = document.getElementById('coin-search')
+    if (searchInput) {
+      searchInput.focus()
+      searchInput.scrollIntoView({ behavior: 'smooth', block: 'center' })
+    }
+  }
 
   return (
     <header className={styles.navbar} role="banner">
@@ -56,6 +64,34 @@ function Navbar({ onToggleSidebar }) {
       </div>
 
       <div className={styles.right}>
+        {/* Shortcut Quick Focus */}
+        <button
+          className={styles.shortcutBadge}
+          onClick={handleShortcutClick}
+          title="Press Ctrl+K to Search"
+        >
+          <span>Search</span>
+          <kbd>Ctrl+K</kbd>
+        </button>
+
+        {/* Currency Switcher Dropdown */}
+        <div className={styles.currencySelectWrapper}>
+          <select
+            id="navbar-currency-select"
+            className={styles.currencySelect}
+            value={currency}
+            onChange={(e) => setCurrency(e.target.value)}
+            aria-label="Select currency"
+          >
+            <option value="USD">USD ($)</option>
+            <option value="EUR">EUR (€)</option>
+            <option value="GBP">GBP (£)</option>
+            <option value="INR">INR (₹)</option>
+            <option value="JPY">JPY (¥)</option>
+          </select>
+        </div>
+
+        {/* Theme Toggle Button */}
         <button
           id="theme-toggle"
           className={styles.iconButton}

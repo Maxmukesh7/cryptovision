@@ -133,8 +133,29 @@
 .controlsGroup {
   display: flex;
   align-items: center;
-  gap: 16px;
+  gap: 12px;
   flex-wrap: wrap;
+}
+
+.filterToggleBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 14px;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--color-border);
+  background: var(--color-surface-alt);
+  color: var(--color-text-secondary);
+  font-size: 13px;
+  font-weight: 600;
+  transition: all var(--transition-fast);
+}
+
+.filterToggleBtn:hover,
+.filterToggleActive {
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+  background: var(--color-primary-glow);
 }
 
 .selectWrapper {
@@ -171,6 +192,85 @@
   color: var(--color-text-muted);
   font-weight: 500;
   white-space: nowrap;
+}
+
+/* ── Advanced Filters Panel ── */
+.advancedFiltersPanel {
+  padding: 16px 24px;
+  background: var(--color-surface-alt);
+  border-bottom: 1px solid var(--color-border);
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  flex-wrap: wrap;
+  animation: expandDown 0.2s ease-out;
+}
+
+@keyframes expandDown {
+  from { opacity: 0; transform: translateY(-8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.filterGroup {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.filterLabel {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--color-text-secondary);
+  white-space: nowrap;
+}
+
+.chipGroup {
+  display: flex;
+  gap: 6px;
+}
+
+.chip {
+  padding: 4px 10px;
+  border-radius: 99px;
+  border: 1px solid var(--color-border);
+  background: var(--color-surface);
+  color: var(--color-text-secondary);
+  font-size: 12px;
+  font-weight: 600;
+  transition: all var(--transition-fast);
+}
+
+.chip:hover,
+.chipActive {
+  background: var(--color-primary);
+  color: #ffffff;
+  border-color: var(--color-primary);
+}
+
+.filterInput {
+  width: 100px;
+  padding: 5px 8px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--color-border);
+  background: var(--color-surface);
+  color: var(--color-text-primary);
+  font-size: 12px;
+  outline: none;
+}
+
+.filterInput:focus {
+  border-color: var(--color-primary);
+}
+
+.resetFiltersBtn {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--color-danger);
+  margin-left: auto;
+}
+
+.resetFiltersBtn:hover {
+  text-decoration: underline;
 }
 
 /* ── Table scroll wrapper ── */

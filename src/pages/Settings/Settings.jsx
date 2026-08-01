@@ -1,5 +1,7 @@
 import React from 'react'
 import { useApp } from '../../context/AppContext'
+import useCoins from '../../hooks/useCoins'
+import { generatePdfReport } from '../../services/pdfReportService'
 import styles from './Settings.module.css'
 
 const SunIcon = () => (
@@ -30,10 +32,19 @@ const DownloadIcon = () => (
   </svg>
 )
 
+const PdfIcon = () => (
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+    <polyline points="14 2 14 8 20 8" />
+    <line x1="12" y1="18" x2="12" y2="12" />
+    <polyline points="9 15 12 18 15 15" />
+  </svg>
+)
+
 const RotateCcwIcon = () => (
   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
     <polyline points="1 4 1 10 7 10" />
-    <path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10" />
+    <path d="M3.51 15a9 9 0 1 1 2.13-9.36L1 10" />
   </svg>
 )
 
@@ -45,11 +56,31 @@ function Settings() {
     setRefreshInterval,
     currency,
     setCurrency,
+    rates,
     watchlist,
     portfolio,
     exportData,
     resetPreferences,
+    addToast,
   } = useApp()
+
+  const { coins } = useCoins()
+
+  const handleExportPdf = () => {
+    try {
+      generatePdfReport({
+        coins,
+        watchlist,
+        portfolio,
+        currency,
+        rates,
+      })
+      addToast('Exported CryptoVision_Report.pdf successfully', 'success')
+    } catch (err) {
+      console.error('PDF Export Error:', err)
+      addToast('Failed to generate PDF report', 'danger')
+    }
+  }
 
   return (
     <section className={styles.container} aria-labelledby="settings-heading">
@@ -113,47 +144,31 @@ function Settings() {
               <option value="USD">USD ($ - United States Dollar)</option>
               <option value="EUR">EUR (€ - Euro)</option>
               <option value="GBP">GBP (£ - British Pound)</option>
+              <option value="INR">INR (₹ - Indian Rupee)</option>
+              <option value="JPY">JPY (¥ - Japanese Yen)</option>
             </select>
           </div>
         </div>
 
-        {/* ── 3. Data Export ── */}
+        {/* ── 3. Data & Report Export ── */}
         <div className={styles.card}>
-          <h2 className={styles.cardTitle}>Export Data</h2>
-          <p className={styles.cardDesc}>Download your watchlist and portfolio data in CSV or JSON format</p>
+          <h2 className={styles.cardTitle}>Export Reports &amp; Data</h2>
+          <p className={styles.cardDesc}>Download executive PDF reports or raw CSV spreadsheets</p>
           <div className={styles.exportGroup}>
             <div className={styles.exportItem}>
-              <span>Watchlist Data ({watchlist.length} items)</span>
+              <span>Executive Analytics Report</span>
               <div className={styles.btnRow}>
                 <button
                   className={styles.exportBtn}
-                  onClick={() => exportData(watchlist.map((id) => ({ coinId: id })), 'cryptovision_watchlist', 'csv')}
+                  onClick={() => exportData(coins.map((c) => ({ name: c.name, symbol: c.symbol, price: c.current_price, market_cap: c.market_cap })), 'cryptovision_market_data', 'csv')}
                 >
-                  <DownloadIcon /> CSV
+                  <DownloadIcon /> Export CSV
                 </button>
                 <button
-                  className={styles.exportBtn}
-                  onClick={() => exportData(watchlist, 'cryptovision_watchlist', 'json')}
+                  className={`${styles.exportBtn} ${styles.pdfBtn}`}
+                  onClick={handleExportPdf}
                 >
-                  <DownloadIcon /> JSON
-                </button>
-              </div>
-            </div>
-
-            <div className={styles.exportItem}>
-              <span>Portfolio Data ({portfolio.length} items)</span>
-              <div className={styles.btnRow}>
-                <button
-                  className={styles.exportBtn}
-                  onClick={() => exportData(portfolio, 'cryptovision_portfolio', 'csv')}
-                >
-                  <DownloadIcon /> CSV
-                </button>
-                <button
-                  className={styles.exportBtn}
-                  onClick={() => exportData(portfolio, 'cryptovision_portfolio', 'json')}
-                >
-                  <DownloadIcon /> JSON
+                  <PdfIcon /> Export PDF
                 </button>
               </div>
             </div>

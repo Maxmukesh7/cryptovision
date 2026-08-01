@@ -1,10 +1,8 @@
 import React, { useState, useMemo } from 'react'
+import { useApp } from '../../context/AppContext'
 import useCoins from '../../hooks/useCoins'
 import {
-  formatCurrency,
-  formatLargeNumber,
   formatPercent,
-  formatNumber,
   getChangeDirection,
 } from '../../utils/formatters'
 import Loader from '../../components/Loader/Loader'
@@ -12,6 +10,7 @@ import styles from './Compare.module.css'
 
 function Compare() {
   const { coins, loading } = useCoins()
+  const { formatCurrency, formatLargeNumber, currency } = useApp()
 
   const [coin1Id, setCoin1Id] = useState('btc-bitcoin')
   const [coin2Id, setCoin2Id] = useState('eth-ethereum')
@@ -31,13 +30,13 @@ function Compare() {
 
   const rows = [
     {
-      label: 'Current Price',
+      label: `Current Price (${currency})`,
       val1: formatCurrency(coin1.current_price),
       val2: formatCurrency(coin2.current_price),
       winner: coin1.current_price > coin2.current_price ? 1 : 2,
     },
     {
-      label: 'Market Cap',
+      label: `Market Cap (${currency})`,
       val1: formatLargeNumber(coin1.market_cap),
       val2: formatLargeNumber(coin2.market_cap),
       winner: (coin1.market_cap || 0) > (coin2.market_cap || 0) ? 1 : 2,
@@ -51,7 +50,7 @@ function Compare() {
       winner: (coin1.price_change_percentage_24h || 0) > (coin2.price_change_percentage_24h || 0) ? 1 : 2,
     },
     {
-      label: '24H Volume',
+      label: `24H Volume (${currency})`,
       val1: formatLargeNumber(coin1.total_volume),
       val2: formatLargeNumber(coin2.total_volume),
       winner: (coin1.total_volume || 0) > (coin2.total_volume || 0) ? 1 : 2,
@@ -69,7 +68,7 @@ function Compare() {
       <header className={styles.header}>
         <div>
           <h1 id="compare-heading" className={styles.title}>Cryptocurrency Comparison</h1>
-          <p className={styles.subtitle}>Side-by-side feature and metric analysis</p>
+          <p className={styles.subtitle}>Side-by-side feature and metric analysis ({currency})</p>
         </div>
       </header>
 

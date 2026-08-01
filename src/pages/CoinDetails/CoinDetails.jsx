@@ -6,8 +6,6 @@ import PriceChart from '../../components/PriceChart/PriceChart'
 import Loader from '../../components/Loader/Loader'
 import ErrorState from '../../components/ErrorState/ErrorState'
 import {
-  formatCurrency,
-  formatLargeNumber,
   formatPercent,
   formatNumber,
   formatDateTime,
@@ -62,7 +60,7 @@ function StatCard({ id, label, value, subValue, direction }) {
 function CoinDetails() {
   const { id } = useParams()
   const { coin, chartData, loading, error, refetch } = useCoinDetails(id)
-  const { isInWatchlist, toggleWatchlist } = useApp()
+  const { isInWatchlist, toggleWatchlist, formatCurrency, formatLargeNumber, currency } = useApp()
 
   if (loading) {
     return (
@@ -95,32 +93,32 @@ function CoinDetails() {
   const statCards = [
     {
       id: 'stat-price',
-      label: 'Current Price',
-      value: formatCurrency(market?.current_price?.usd, 6),
+      label: `Current Price (${currency})`,
+      value: formatCurrency(market?.current_price?.usd, 4),
       subValue: formatPercent(change24h),
       direction: changeDirection,
     },
     {
       id: 'stat-market-cap',
-      label: 'Market Cap',
+      label: `Market Cap (${currency})`,
       value: formatLargeNumber(market?.market_cap?.usd),
       subValue: formatPercent(market?.market_cap_change_percentage_24h),
       direction: getChangeDirection(market?.market_cap_change_percentage_24h),
     },
     {
       id: 'stat-volume',
-      label: '24H Volume',
+      label: `24H Volume (${currency})`,
       value: formatLargeNumber(market?.total_volume?.usd),
     },
     {
       id: 'stat-24h-high',
-      label: '24H High',
-      value: formatCurrency(market?.high_24h?.usd),
+      label: `24H High (${currency})`,
+      value: formatCurrency(market?.high_24h?.usd, 4),
     },
     {
       id: 'stat-24h-low',
-      label: '24H Low',
-      value: formatCurrency(market?.low_24h?.usd),
+      label: `24H Low (${currency})`,
+      value: formatCurrency(market?.low_24h?.usd, 4),
     },
     {
       id: 'stat-rank',
@@ -143,21 +141,21 @@ function CoinDetails() {
     },
     {
       id: 'stat-ath',
-      label: 'All Time High',
-      value: formatCurrency(market?.ath?.usd),
+      label: `All Time High (${currency})`,
+      value: formatCurrency(market?.ath?.usd, 4),
       subValue: formatPercent(market?.ath_change_percentage?.usd),
       direction: getChangeDirection(market?.ath_change_percentage?.usd),
     },
     {
       id: 'stat-atl',
-      label: 'All Time Low',
-      value: formatCurrency(market?.atl?.usd, 6),
+      label: `All Time Low (${currency})`,
+      value: formatCurrency(market?.atl?.usd, 4),
       subValue: formatPercent(market?.atl_change_percentage?.usd),
       direction: getChangeDirection(market?.atl_change_percentage?.usd),
     },
     {
       id: 'stat-fdv',
-      label: 'Fully Diluted Valuation',
+      label: `Fully Diluted Valuation (${currency})`,
       value: formatLargeNumber(market?.fully_diluted_valuation?.usd),
     },
     {
@@ -227,7 +225,7 @@ function CoinDetails() {
 
         <div className={styles.heroPriceBlock}>
           <p className={styles.currentPrice} id="current-price">
-            {formatCurrency(market?.current_price?.usd, 6)}
+            {formatCurrency(market?.current_price?.usd, 4)}
           </p>
           <div className={styles.priceChange}>
             <span className={`${styles.changeValue} ${styles[changeDirection]}`}>
@@ -250,8 +248,8 @@ function CoinDetails() {
         <div className={styles.chartCard}>
           <div className={styles.chartCardHeader}>
             <div>
-              <h2 className={styles.chartTitle}>7-Day Price Chart</h2>
-              <p className={styles.chartSubtitle}>USD — Last 7 days</p>
+              <h2 className={styles.chartTitle}>7-Day Price Chart ({currency})</h2>
+              <p className={styles.chartSubtitle}>{currency} — Last 7 days</p>
             </div>
             <div className={styles.chartBadge}>
               <span className={styles.chartBadgeDot} />

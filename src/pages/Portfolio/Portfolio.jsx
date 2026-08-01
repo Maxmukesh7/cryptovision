@@ -2,8 +2,6 @@ import React, { useState, useMemo } from 'react'
 import { useApp } from '../../context/AppContext'
 import useCoins from '../../hooks/useCoins'
 import {
-  formatCurrency,
-  formatLargeNumber,
   formatPercent,
   getChangeDirection,
 } from '../../utils/formatters'
@@ -25,7 +23,7 @@ const TrashIcon = () => (
 )
 
 function Portfolio() {
-  const { portfolio, addPortfolioAsset, removePortfolioAsset } = useApp()
+  const { portfolio, addPortfolioAsset, removePortfolioAsset, formatCurrency, currency } = useApp()
   const { coins, loading } = useCoins()
 
   const [selectedCoinId, setSelectedCoinId] = useState('btc-bitcoin')
@@ -90,14 +88,14 @@ function Portfolio() {
       <header className={styles.header}>
         <div>
           <h1 id="portfolio-heading" className={styles.title}>Portfolio Simulator</h1>
-          <p className={styles.subtitle}>Simulate &amp; track your crypto holdings value in real time</p>
+          <p className={styles.subtitle}>Simulate &amp; track your crypto holdings value in real time ({currency})</p>
         </div>
       </header>
 
       {/* ── Summary Stats Cards ── */}
       <div className={styles.summaryGrid}>
         <div className={styles.summaryCard}>
-          <p className={styles.summaryLabel}>Total Portfolio Balance</p>
+          <p className={styles.summaryLabel}>Total Portfolio Balance ({currency})</p>
           <h2 className={styles.summaryValue}>{formatCurrency(totalValue)}</h2>
           <span className={`${styles.changeBadge} ${styles[changeDirection]}`}>
             {avgChangePct >= 0 ? '↑ ' : '↓ '}
@@ -106,7 +104,7 @@ function Portfolio() {
         </div>
 
         <div className={styles.summaryCard}>
-          <p className={styles.summaryLabel}>24H Profit / Loss</p>
+          <p className={styles.summaryLabel}>24H Profit / Loss ({currency})</p>
           <h2 className={`${styles.summaryValue} ${styles[changeDirection]}`}>
             {totalChange24h >= 0 ? '+' : ''}{formatCurrency(totalChange24h)}
           </h2>
@@ -171,9 +169,9 @@ function Portfolio() {
               <thead>
                 <tr>
                   <th>Asset</th>
-                  <th className={styles.thRight}>Price</th>
+                  <th className={styles.thRight}>Price ({currency})</th>
                   <th className={styles.thRight}>Holdings</th>
-                  <th className={styles.thRight}>Total Value</th>
+                  <th className={styles.thRight}>Total Value ({currency})</th>
                   <th className={styles.thRight}>24h Change</th>
                   <th className={styles.thCenter}>Action</th>
                 </tr>

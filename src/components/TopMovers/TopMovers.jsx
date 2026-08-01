@@ -1,6 +1,7 @@
 import React from 'react'
 import { useNavigate } from 'react-router-dom'
-import { formatCurrency, formatPercent, getChangeDirection } from '../../utils/formatters'
+import { useApp } from '../../context/AppContext'
+import { formatPercent, getChangeDirection } from '../../utils/formatters'
 import styles from './TopMovers.module.css'
 
 const TrendingUpIcon = () => (
@@ -19,6 +20,7 @@ const TrendingDownIcon = () => (
 
 function MoverRow({ coin, isGainer }) {
   const navigate = useNavigate()
+  const { formatCurrency } = useApp()
   const direction = getChangeDirection(coin.price_change_percentage_24h)
 
   return (

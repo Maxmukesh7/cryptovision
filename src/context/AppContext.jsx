@@ -1,4 +1,11 @@
 import React, { createContext, useContext, useState, useEffect, useCallback } from 'react'
+import {
+  getExchangeRates,
+  FALLBACK_RATES,
+  convertFromUsd,
+  formatCurrencyVal,
+  formatLargeCurrencyVal,
+} from '../services/currencyService'
 
 const AppContext = createContext()
 
@@ -87,7 +94,7 @@ export function AppProvider({ children }) {
   })
 
   // 7. Default Currency State
-  const [currency, setCurrency] = useState(() => {
+  const [currency, setCurrencyState] = useState(() => {
     try {
       return localStorage.getItem(CURRENCY_KEY) || 'USD'
     } catch {
@@ -95,8 +102,24 @@ export function AppProvider({ children }) {
     }
   })
 
-  // 8. Toasts State
+  // 8. Exchange Rates State
+  const [rates, setRates] = useState(FALLBACK_RATES)
+
+  // 9. Toasts State
   const [toasts, setToasts] = useState([])
+
+  // Fetch Live Exchange Rates on Mount
+  useEffect(() => {
+    let isMounted = true
+    getExchangeRates().then((liveRates) => {
+      if (isMounted && liveRates) {
+        setRates(liveRates)
+      }
+    })
+    return () => {
+      isMounted = false
+    }
+  }, [])
 
   // Apply Theme Attribute
   useEffect(() => {
@@ -169,27 +192,34 @@ export function AppProvider({ children }) {
     setToasts((prev) => prev.filter((t) => t.id !== id))
   }, [])
 
+  // Currency Change Handler
+  const setCurrency = useCallback((newCurr) => {
+    setCurrencyState(newCurr)
+    addToast(`Display currency changed to ${newCurr}`, 'info')
+  }, [addToast])
+
   // Theme Actions
   const toggleTheme = useCallback(() => {
+    let nextTheme = 'light'
     setTheme((prev) => {
-      const next = prev === 'light' ? 'dark' : 'light'
-      addToast(`Switched to ${next === 'dark' ? 'Dark' : 'Light'} Mode`, 'info')
-      return next
+      nextTheme = prev === 'light' ? 'dark' : 'light'
+      return nextTheme
     })
+    addToast(`Switched to ${nextTheme === 'dark' ? 'Dark' : 'Light'} Mode`, 'info')
   }, [addToast])
 
   // Watchlist Actions
   const toggleWatchlist = useCallback((coinId, coinName) => {
+    let isAlreadySaved = false
     setWatchlist((prev) => {
-      const isAlreadySaved = prev.includes(coinId)
-      if (isAlreadySaved) {
-        addToast(`Removed ${coinName || coinId} from Watchlist`, 'info')
-        return prev.filter((id) => id !== coinId)
-      } else {
-        addToast(`Added ${coinName || coinId} to Watchlist`, 'success')
-        return [...prev, coinId]
-      }
+      isAlreadySaved = prev.includes(coinId)
+      return isAlreadySaved ? prev.filter((id) => id !== coinId) : [...prev, coinId]
     })
+    if (isAlreadySaved) {
+      addToast(`Removed ${coinName || coinId} from Watchlist`, 'info')
+    } else {
+      addToast(`Added ${coinName || coinId} to Watchlist`, 'success')
+    }
   }, [addToast])
 
   const isInWatchlist = useCallback((coinId) => {
@@ -200,26 +230,21 @@ export function AppProvider({ children }) {
   const addPortfolioAsset = useCallback((coinId, quantity, coinName) => {
     setPortfolio((prev) => {
       const existing = prev.find((item) => item.coinId === coinId)
-      let updated
       if (existing) {
-        updated = prev.map((item) =>
+        return prev.map((item) =>
           item.coinId === coinId
             ? { ...item, quantity: item.quantity + Number(quantity) }
             : item
         )
-      } else {
-        updated = [...prev, { coinId, quantity: Number(quantity) }]
       }
-      addToast(`Added ${quantity} ${coinName || coinId} to Portfolio`, 'success')
-      return updated
+      return [...prev, { coinId, quantity: Number(quantity) }]
     })
+    addToast(`Added ${quantity} ${coinName || coinId} to Portfolio`, 'success')
   }, [addToast])
 
   const removePortfolioAsset = useCallback((coinId, coinName) => {
-    setPortfolio((prev) => {
-      addToast(`Removed ${coinName || coinId} from Portfolio`, 'info')
-      return prev.filter((item) => item.coinId !== coinId)
-    })
+    setPortfolio((prev) => prev.filter((item) => item.coinId !== coinId))
+    addToast(`Removed ${coinName || coinId} from Portfolio`, 'info')
   }, [addToast])
 
   // Dashboard Layout Actions
@@ -284,10 +309,23 @@ export function AppProvider({ children }) {
     setTheme('light')
     setDashboardLayout(DEFAULT_LAYOUT)
     setRefreshInterval(60000)
-    setCurrency('USD')
+    setCurrencyState('USD')
     setSearchHistory([])
     addToast('Preferences reset to default values', 'success')
   }, [addToast])
+
+  // Formatting helpers with current rates and currency
+  const formatCurrency = useCallback((usdAmount, maxDigits = 2) => {
+    return formatCurrencyVal(usdAmount, currency, rates, maxDigits)
+  }, [currency, rates])
+
+  const formatLargeNumber = useCallback((usdAmount) => {
+    return formatLargeCurrencyVal(usdAmount, currency, rates)
+  }, [currency, rates])
+
+  const convertUsd = useCallback((usdAmount) => {
+    return convertFromUsd(usdAmount, currency, rates)
+  }, [currency, rates])
 
   const value = {
     theme,
@@ -307,6 +345,10 @@ export function AppProvider({ children }) {
     setRefreshInterval,
     currency,
     setCurrency,
+    rates,
+    formatCurrency,
+    formatLargeNumber,
+    convertUsd,
     exportData,
     resetPreferences,
     toasts,

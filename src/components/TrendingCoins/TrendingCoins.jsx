@@ -1,6 +1,7 @@
 import React from 'react'
 import { useNavigate } from 'react-router-dom'
-import { formatCurrency, formatPercent, getChangeDirection } from '../../utils/formatters'
+import { useApp } from '../../context/AppContext'
+import { formatPercent, getChangeDirection } from '../../utils/formatters'
 import styles from './TrendingCoins.module.css'
 
 const FireIcon = () => (
@@ -12,10 +13,10 @@ const FireIcon = () => (
 
 function TrendingCoins({ coins = [] }) {
   const navigate = useNavigate()
+  const { formatCurrency } = useApp()
 
   if (!coins || coins.length === 0) return null
 
-  // Sort by combination of 24h volume & gain for trending rank
   const trendingList = [...coins]
     .sort((a, b) => (b.total_volume || 0) * Math.abs(b.price_change_percentage_24h || 1) - (a.total_volume || 0) * Math.abs(a.price_change_percentage_24h || 1))
     .slice(0, 10)

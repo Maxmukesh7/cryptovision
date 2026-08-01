@@ -1,34 +1,40 @@
 /**
  * CryptoVision — Utility Formatters
- * Shared formatting helpers used across the application.
+ * Shared formatting helpers integrated with currencyService for dynamic exchange rates.
  */
 
+import {
+  FALLBACK_RATES,
+  CURRENCY_SYMBOLS,
+  CURRENCY_LOCALES,
+  formatCurrencyVal,
+  formatLargeCurrencyVal,
+  convertFromUsd,
+} from '../services/currencyService'
+
+export { FALLBACK_RATES, CURRENCY_SYMBOLS, CURRENCY_LOCALES, convertFromUsd }
+
 /**
- * Format a number as a USD currency string.
- * @param {number} value
+ * Format a USD base number as a converted currency string using Intl.NumberFormat.
+ * @param {number} value - Base USD value
  * @param {number} [maximumFractionDigits=2]
- * @returns {string} e.g. "$67,432.00"
+ * @param {string} [currencyCode='USD']
+ * @param {Record<string, number>} [rates]
+ * @returns {string} e.g. "€62,037.44" or "₹5,364,875.00"
  */
-export function formatCurrency(value, maximumFractionDigits = 2) {
-  if (value === null || value === undefined) return '—'
-  return new Intl.NumberFormat('en-US', {
-    style: 'currency',
-    currency: 'USD',
-    maximumFractionDigits,
-  }).format(value)
+export function formatCurrency(value, maximumFractionDigits = 2, currencyCode = 'USD', rates = FALLBACK_RATES) {
+  return formatCurrencyVal(value, currencyCode, rates, maximumFractionDigits)
 }
 
 /**
- * Format a large number with T / B / M suffixes.
- * @param {number} value
- * @returns {string} e.g. "$2.41T"
+ * Format a large number with currency symbol and T / B / M suffixes.
+ * @param {number} value - Base USD value
+ * @param {string} [currencyCode='USD']
+ * @param {Record<string, number>} [rates]
+ * @returns {string} e.g. "$2.41T" or "€2.21T"
  */
-export function formatLargeNumber(value) {
-  if (value === null || value === undefined) return '—'
-  if (value >= 1e12) return `$${(value / 1e12).toFixed(2)}T`
-  if (value >= 1e9) return `$${(value / 1e9).toFixed(2)}B`
-  if (value >= 1e6) return `$${(value / 1e6).toFixed(2)}M`
-  return formatCurrency(value)
+export function formatLargeNumber(value, currencyCode = 'USD', rates = FALLBACK_RATES) {
+  return formatLargeCurrencyVal(value, currencyCode, rates)
 }
 
 /**
@@ -38,7 +44,7 @@ export function formatLargeNumber(value) {
  * @returns {string} e.g. "+2.41%"
  */
 export function formatPercent(value, digits = 2) {
-  if (value === null || value === undefined) return '—'
+  if (value === null || value === undefined || isNaN(value)) return '—'
   const sign = value >= 0 ? '+' : ''
   return `${sign}${value.toFixed(digits)}%`
 }
@@ -66,7 +72,7 @@ export function average(values) {
 
 /**
  * Format a Unix timestamp (ms) as a short date string.
- * @param {number} timestamp - milliseconds since epoch
+ * @param {number} timestamp
  * @param {Intl.DateTimeFormatOptions} [opts]
  * @returns {string} e.g. "Jan 26"
  */
@@ -96,6 +102,6 @@ export function formatDateTime(isoString) {
  * @returns {string} e.g. "19,784,312"
  */
 export function formatNumber(value) {
-  if (value === null || value === undefined) return '—'
+  if (value === null || value === undefined || isNaN(value)) return '—'
   return new Intl.NumberFormat('en-US').format(value)
 }

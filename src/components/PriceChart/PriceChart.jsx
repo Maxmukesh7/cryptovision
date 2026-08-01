@@ -10,7 +10,8 @@ import {
   Tooltip,
   Legend,
 } from 'chart.js'
-import { formatDate, formatCurrency } from '../../utils/formatters'
+import { useApp } from '../../context/AppContext'
+import { formatDate } from '../../utils/formatters'
 import styles from './PriceChart.module.css'
 
 Chart.register(
@@ -25,9 +26,9 @@ Chart.register(
 )
 
 const CHART_COLOR = 'rgba(26, 111, 255, 1)'
-const CHART_FILL = 'rgba(26, 111, 255, 0.08)'
 
 function PriceChart({ labels, prices, coinName }) {
+  const { formatCurrency, convertUsd, currency } = useApp()
   const canvasRef = useRef(null)
   const chartRef = useRef(null)
 
@@ -39,10 +40,11 @@ function PriceChart({ labels, prices, coinName }) {
     }
 
     const ctx = canvasRef.current.getContext('2d')
-
     const gradient = ctx.createLinearGradient(0, 0, 0, canvasRef.current.offsetHeight || 320)
     gradient.addColorStop(0, 'rgba(26, 111, 255, 0.18)')
     gradient.addColorStop(1, 'rgba(26, 111, 255, 0)')
+
+    const convertedPrices = prices.map((p) => convertUsd(p))
 
     chartRef.current = new Chart(ctx, {
       type: 'line',
@@ -50,8 +52,8 @@ function PriceChart({ labels, prices, coinName }) {
         labels: labels.map(ts => formatDate(ts)),
         datasets: [
           {
-            label: `${coinName} Price (USD)`,
-            data: prices,
+            label: `${coinName} Price (${currency})`,
+            data: convertedPrices,
             borderColor: CHART_COLOR,
             backgroundColor: gradient,
             borderWidth: 2.5,
@@ -96,7 +98,10 @@ function PriceChart({ labels, prices, coinName }) {
                   minute: '2-digit',
                 })
               },
-              label: (item) => ` ${formatCurrency(item.parsed.y, 6)}`,
+              label: (item) => {
+                const usdVal = prices[item.dataIndex]
+                return ` ${formatCurrency(usdVal, 4)}`
+              },
             },
           },
         },
@@ -129,7 +134,10 @@ function PriceChart({ labels, prices, coinName }) {
               color: '#8fa0c0',
               font: { size: 11, family: 'Inter, sans-serif' },
               maxTicksLimit: 6,
-              callback: (value) => formatCurrency(value, 0),
+              callback: (val) => {
+                const usdVal = val / (convertUsd(1) || 1)
+                return formatCurrency(usdVal, 0)
+              },
             },
           },
         },
@@ -142,7 +150,7 @@ function PriceChart({ labels, prices, coinName }) {
         chartRef.current = null
       }
     }
-  }, [labels, prices, coinName])
+  }, [labels, prices, coinName, currency, convertUsd, formatCurrency])
 
   return (
     <div className={styles.chartWrapper}>
