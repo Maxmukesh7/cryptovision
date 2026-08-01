@@ -5,9 +5,32 @@ const AppContext = createContext()
 const WATCHLIST_KEY = 'cv_watchlist'
 const PORTFOLIO_KEY = 'cv_portfolio'
 const SEARCH_HISTORY_KEY = 'cv_search_history'
+const THEME_KEY = 'cv_theme'
+const LAYOUT_KEY = 'cv_dashboard_layout'
+const REFRESH_KEY = 'cv_refresh_interval'
+const CURRENCY_KEY = 'cv_currency'
+
+const DEFAULT_LAYOUT = {
+  globalOverview: true,
+  trendingCoins: true,
+  marketSentiment: true,
+  topMovers: true,
+  marketCharts: true,
+  marketTable: true,
+  cryptoNews: true,
+}
 
 export function AppProvider({ children }) {
-  // 1. Watchlist state
+  // 1. Theme State
+  const [theme, setTheme] = useState(() => {
+    try {
+      return localStorage.getItem(THEME_KEY) || 'light'
+    } catch {
+      return 'light'
+    }
+  })
+
+  // 2. Watchlist State
   const [watchlist, setWatchlist] = useState(() => {
     try {
       const saved = localStorage.getItem(WATCHLIST_KEY)
@@ -17,7 +40,7 @@ export function AppProvider({ children }) {
     }
   })
 
-  // 2. Portfolio state
+  // 3. Portfolio State
   const [portfolio, setPortfolio] = useState(() => {
     try {
       const saved = localStorage.getItem(PORTFOLIO_KEY)
@@ -33,7 +56,7 @@ export function AppProvider({ children }) {
     }
   })
 
-  // 3. Search History state
+  // 4. Search History State
   const [searchHistory, setSearchHistory] = useState(() => {
     try {
       const saved = localStorage.getItem(SEARCH_HISTORY_KEY)
@@ -43,8 +66,47 @@ export function AppProvider({ children }) {
     }
   })
 
-  // 4. Toast notifications
+  // 5. Dashboard Layout Preferences State
+  const [dashboardLayout, setDashboardLayout] = useState(() => {
+    try {
+      const saved = localStorage.getItem(LAYOUT_KEY)
+      return saved ? { ...DEFAULT_LAYOUT, ...JSON.parse(saved) } : DEFAULT_LAYOUT
+    } catch {
+      return DEFAULT_LAYOUT
+    }
+  })
+
+  // 6. Auto Refresh Interval State (in ms)
+  const [refreshInterval, setRefreshInterval] = useState(() => {
+    try {
+      const saved = localStorage.getItem(REFRESH_KEY)
+      return saved ? Number(saved) : 60000
+    } catch {
+      return 60000
+    }
+  })
+
+  // 7. Default Currency State
+  const [currency, setCurrency] = useState(() => {
+    try {
+      return localStorage.getItem(CURRENCY_KEY) || 'USD'
+    } catch {
+      return 'USD'
+    }
+  })
+
+  // 8. Toasts State
   const [toasts, setToasts] = useState([])
+
+  // Apply Theme Attribute
+  useEffect(() => {
+    document.documentElement.setAttribute('data-theme', theme)
+    try {
+      localStorage.setItem(THEME_KEY, theme)
+    } catch {
+      // ignore
+    }
+  }, [theme])
 
   useEffect(() => {
     try {
@@ -70,6 +132,30 @@ export function AppProvider({ children }) {
     }
   }, [searchHistory])
 
+  useEffect(() => {
+    try {
+      localStorage.setItem(LAYOUT_KEY, JSON.stringify(dashboardLayout))
+    } catch {
+      // ignore
+    }
+  }, [dashboardLayout])
+
+  useEffect(() => {
+    try {
+      localStorage.setItem(REFRESH_KEY, String(refreshInterval))
+    } catch {
+      // ignore
+    }
+  }, [refreshInterval])
+
+  useEffect(() => {
+    try {
+      localStorage.setItem(CURRENCY_KEY, currency)
+    } catch {
+      // ignore
+    }
+  }, [currency])
+
   // Toast Helper
   const addToast = useCallback((message, type = 'info') => {
     const id = Date.now() + Math.random()
@@ -82,6 +168,15 @@ export function AppProvider({ children }) {
   const removeToast = useCallback((id) => {
     setToasts((prev) => prev.filter((t) => t.id !== id))
   }, [])
+
+  // Theme Actions
+  const toggleTheme = useCallback(() => {
+    setTheme((prev) => {
+      const next = prev === 'light' ? 'dark' : 'light'
+      addToast(`Switched to ${next === 'dark' ? 'Dark' : 'Light'} Mode`, 'info')
+      return next
+    })
+  }, [addToast])
 
   // Watchlist Actions
   const toggleWatchlist = useCallback((coinId, coinName) => {
@@ -127,6 +222,14 @@ export function AppProvider({ children }) {
     })
   }, [addToast])
 
+  // Dashboard Layout Actions
+  const toggleLayoutSection = useCallback((sectionKey) => {
+    setDashboardLayout((prev) => ({
+      ...prev,
+      [sectionKey]: !prev[sectionKey],
+    }))
+  }, [])
+
   // Search History Actions
   const addSearchQuery = useCallback((query) => {
     if (!query || !query.trim()) return
@@ -141,7 +244,54 @@ export function AppProvider({ children }) {
     setSearchHistory([])
   }, [])
 
+  // Export Data Helper (CSV / JSON)
+  const exportData = useCallback((data, filename, format = 'json') => {
+    try {
+      let content, mimeType, ext
+      if (format === 'csv') {
+        mimeType = 'text/csv;charset=utf-8;'
+        ext = 'csv'
+        if (Array.isArray(data) && data.length > 0) {
+          const keys = Object.keys(data[0])
+          const header = keys.join(',')
+          const rows = data.map((obj) =>
+            keys.map((k) => JSON.stringify(obj[k] ?? '')).join(',')
+          )
+          content = [header, ...rows].join('\n')
+        } else {
+          content = JSON.stringify(data)
+        }
+      } else {
+        mimeType = 'application/json;charset=utf-8;'
+        ext = 'json'
+        content = JSON.stringify(data, null, 2)
+      }
+
+      const blob = new Blob([content], { type: mimeType })
+      const link = document.createElement('a')
+      link.href = URL.createObjectURL(blob)
+      link.download = `${filename}.${ext}`
+      link.click()
+      URL.revokeObjectURL(link.href)
+      addToast(`Exported ${filename}.${ext} successfully`, 'success')
+    } catch {
+      addToast('Failed to export data', 'info')
+    }
+  }, [addToast])
+
+  // Reset Preferences
+  const resetPreferences = useCallback(() => {
+    setTheme('light')
+    setDashboardLayout(DEFAULT_LAYOUT)
+    setRefreshInterval(60000)
+    setCurrency('USD')
+    setSearchHistory([])
+    addToast('Preferences reset to default values', 'success')
+  }, [addToast])
+
   const value = {
+    theme,
+    toggleTheme,
     watchlist,
     toggleWatchlist,
     isInWatchlist,
@@ -151,6 +301,14 @@ export function AppProvider({ children }) {
     searchHistory,
     addSearchQuery,
     clearSearchHistory,
+    dashboardLayout,
+    toggleLayoutSection,
+    refreshInterval,
+    setRefreshInterval,
+    currency,
+    setCurrency,
+    exportData,
+    resetPreferences,
     toasts,
     addToast,
     removeToast,

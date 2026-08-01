@@ -13,6 +13,7 @@ import styles from './App.module.css'
 const Watchlist = lazy(() => import('./pages/Watchlist/Watchlist'))
 const Compare = lazy(() => import('./pages/Compare/Compare'))
 const Portfolio = lazy(() => import('./pages/Portfolio/Portfolio'))
+const Settings = lazy(() => import('./pages/Settings/Settings'))
 
 function App() {
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false)
@@ -55,6 +56,14 @@ function App() {
                 element={
                   <Suspense fallback={<Loader size="lg" label="Loading Portfolio..." />}>
                     <Portfolio />
+                  </Suspense>
+                }
+              />
+              <Route
+                path="settings"
+                element={
+                  <Suspense fallback={<Loader size="lg" label="Loading Settings..." />}>
+                    <Settings />
                   </Suspense>
                 }
               />

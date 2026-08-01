@@ -1,4 +1,5 @@
 import React, { useMemo } from 'react'
+import { useApp } from '../../context/AppContext'
 import useCoins from '../../hooks/useCoins'
 import { useAutoRefresh } from '../../hooks/useAutoRefresh'
 import GlobalOverview from '../../components/GlobalOverview/GlobalOverview'
@@ -9,6 +10,7 @@ import DashboardCard from '../../components/DashboardCard/DashboardCard'
 import TopMovers from '../../components/TopMovers/TopMovers'
 import DashboardCharts from '../../components/DashboardCharts/DashboardCharts'
 import CoinTable from '../../components/CoinTable/CoinTable'
+import DashboardCustomizer from '../../components/DashboardCustomizer/DashboardCustomizer'
 import ErrorState from '../../components/ErrorState/ErrorState'
 import {
   SkeletonCard,
@@ -82,9 +84,10 @@ const RefreshIcon = ({ isSpinning }) => (
 
 function Dashboard() {
   const { coins = [], loading, error, refetch } = useCoins()
+  const { dashboardLayout, refreshInterval } = useApp()
 
-  // 60-Second Auto Refresh with cleanup and collision protection
-  useAutoRefresh(refetch, 60000)
+  // Auto Refresh based on user setting
+  useAutoRefresh(refetch, refreshInterval)
 
   // Calculate 6 Top Analytics Cards & Movers with useMemo
   const { cards, gainers, losers } = useMemo(() => {
@@ -183,6 +186,7 @@ function Dashboard() {
           <p className={styles.pageSubtitle}>Real-time global metrics, trending coins &amp; market intelligence</p>
         </div>
         <div className={styles.headerActions}>
+          <DashboardCustomizer />
           <button
             id="refresh-data-btn"
             className={styles.refreshButton}
@@ -195,7 +199,7 @@ function Dashboard() {
           </button>
           <div className={styles.dateBadge}>
             <span className={styles.liveIndicator} />
-            <span>Auto-Refresh 60s</span>
+            <span>{refreshInterval ? `Auto-Refresh ${refreshInterval / 1000}s` : 'Live Data'}</span>
           </div>
         </div>
       </header>
@@ -223,35 +227,37 @@ function Dashboard() {
       {coins.length > 0 && (
         <>
           {/* 1. Global Market Overview Section */}
-          <GlobalOverview coins={coins} />
+          {dashboardLayout.globalOverview && <GlobalOverview coins={coins} />}
 
           {/* 2. Trending Coins Section */}
-          <TrendingCoins coins={coins} />
+          {dashboardLayout.trendingCoins && <TrendingCoins coins={coins} />}
 
           {/* 3. Market Sentiment & Quick Highlights Widgets */}
-          <MarketSentiment coins={coins} />
+          {dashboardLayout.marketSentiment && <MarketSentiment coins={coins} />}
 
           {/* 4. Top Gainers & Top Losers */}
-          <TopMovers gainers={gainers} losers={losers} />
+          {dashboardLayout.topMovers && <TopMovers gainers={gainers} losers={losers} />}
 
           {/* 5. Market Analytics Charts (Bar, Doughnut, Line) */}
-          <DashboardCharts coins={coins} />
+          {dashboardLayout.marketCharts && <DashboardCharts coins={coins} />}
 
           {/* 6. Cryptocurrency Market Table */}
-          <div className={styles.tableSection}>
-            <div className={styles.tableSectionHeader}>
-              <div>
-                <h2 className={styles.sectionTitle}>Cryptocurrency Market Rankings</h2>
-                <p className={styles.sectionSubtitle}>
-                  Top assets ranked by market capitalization and 24h volume
-                </p>
+          {dashboardLayout.marketTable && (
+            <div className={styles.tableSection}>
+              <div className={styles.tableSectionHeader}>
+                <div>
+                  <h2 className={styles.sectionTitle}>Cryptocurrency Market Rankings</h2>
+                  <p className={styles.sectionSubtitle}>
+                    Top assets ranked by market capitalization and 24h volume
+                  </p>
+                </div>
               </div>
+              <CoinTable coins={coins} />
             </div>
-            <CoinTable coins={coins} />
-          </div>
+          )}
 
           {/* 7. Latest Crypto News Section */}
-          <CryptoNews />
+          {dashboardLayout.cryptoNews && <CryptoNews />}
         </>
       )}
     </section>

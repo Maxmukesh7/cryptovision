@@ -1,4 +1,5 @@
 import React from 'react'
+import { useApp } from '../../context/AppContext'
 import styles from './Navbar.module.css'
 
 const MenuIcon = () => (
@@ -6,13 +7,6 @@ const MenuIcon = () => (
     <line x1="3" y1="6" x2="21" y2="6" />
     <line x1="3" y1="12" x2="21" y2="12" />
     <line x1="3" y1="18" x2="21" y2="18" />
-  </svg>
-)
-
-const SearchIcon = () => (
-  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
-    <circle cx="11" cy="11" r="8" />
-    <line x1="21" y1="21" x2="16.65" y2="16.65" />
   </svg>
 )
 
@@ -30,14 +24,15 @@ const SunIcon = () => (
   </svg>
 )
 
-const BellIcon = () => (
+const MoonIcon = () => (
   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
-    <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" />
-    <path d="M13.73 21a2 2 0 0 1-3.46 0" />
+    <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
   </svg>
 )
 
 function Navbar({ onToggleSidebar }) {
+  const { theme, toggleTheme } = useApp()
+
   return (
     <header className={styles.navbar} role="banner">
       <div className={styles.left}>
@@ -61,17 +56,14 @@ function Navbar({ onToggleSidebar }) {
       </div>
 
       <div className={styles.right}>
-        <button id="search-btn" className={styles.iconButton} aria-label="Search">
-          <SearchIcon />
-        </button>
-
-        <button id="theme-toggle" className={styles.iconButton} aria-label="Toggle theme">
-          <SunIcon />
-        </button>
-
-        <button id="notifications-btn" className={styles.iconButton} aria-label="Notifications">
-          <BellIcon />
-          <span className={styles.notificationBadge} aria-hidden="true" />
+        <button
+          id="theme-toggle"
+          className={styles.iconButton}
+          onClick={toggleTheme}
+          aria-label={`Switch to ${theme === 'light' ? 'dark' : 'light'} mode`}
+          title={`Switch to ${theme === 'light' ? 'dark' : 'light'} mode`}
+        >
+          {theme === 'light' ? <MoonIcon /> : <SunIcon />}
         </button>
 
         <button id="profile-avatar" className={styles.avatar} aria-label="Profile">
@@ -82,4 +74,4 @@ function Navbar({ onToggleSidebar }) {
   )
 }
 
-export default Navbar
+export default React.memo(Navbar)
