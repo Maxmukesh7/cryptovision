@@ -1,6 +1,7 @@
 import React, { useState, lazy, Suspense } from 'react'
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import { AppProvider } from './context/AppContext'
+import ErrorBoundary from './components/ErrorBoundary/ErrorBoundary'
 import ToastContainer from './components/Toast/Toast'
 import Layout from './components/Layout/Layout'
 import Dashboard from './pages/Dashboard/Dashboard'
@@ -21,60 +22,62 @@ function App() {
   const toggleSidebar = () => setSidebarCollapsed((prev) => !prev)
 
   return (
-    <AppProvider>
-      <BrowserRouter>
-        <div className={styles.appRoot}>
-          <Routes>
-            <Route
-              path="/"
-              element={
-                <Layout
-                  sidebarCollapsed={sidebarCollapsed}
-                  onToggleSidebar={toggleSidebar}
+    <ErrorBoundary>
+      <AppProvider>
+        <BrowserRouter>
+          <div className={styles.appRoot}>
+            <Routes>
+              <Route
+                path="/"
+                element={
+                  <Layout
+                    sidebarCollapsed={sidebarCollapsed}
+                    onToggleSidebar={toggleSidebar}
+                  />
+                }
+              >
+                <Route index element={<Dashboard />} />
+                <Route
+                  path="watchlist"
+                  element={
+                    <Suspense fallback={<Loader size="lg" label="Loading Watchlist..." />}>
+                      <Watchlist />
+                    </Suspense>
+                  }
                 />
-              }
-            >
-              <Route index element={<Dashboard />} />
-              <Route
-                path="watchlist"
-                element={
-                  <Suspense fallback={<Loader size="lg" label="Loading Watchlist..." />}>
-                    <Watchlist />
-                  </Suspense>
-                }
-              />
-              <Route
-                path="compare"
-                element={
-                  <Suspense fallback={<Loader size="lg" label="Loading Comparison..." />}>
-                    <Compare />
-                  </Suspense>
-                }
-              />
-              <Route
-                path="portfolio"
-                element={
-                  <Suspense fallback={<Loader size="lg" label="Loading Portfolio..." />}>
-                    <Portfolio />
-                  </Suspense>
-                }
-              />
-              <Route
-                path="settings"
-                element={
-                  <Suspense fallback={<Loader size="lg" label="Loading Settings..." />}>
-                    <Settings />
-                  </Suspense>
-                }
-              />
-              <Route path="coin/:id" element={<CoinDetails />} />
-            </Route>
-            <Route path="*" element={<NotFound />} />
-          </Routes>
-          <ToastContainer />
-        </div>
-      </BrowserRouter>
-    </AppProvider>
+                <Route
+                  path="compare"
+                  element={
+                    <Suspense fallback={<Loader size="lg" label="Loading Comparison..." />}>
+                      <Compare />
+                    </Suspense>
+                  }
+                />
+                <Route
+                  path="portfolio"
+                  element={
+                    <Suspense fallback={<Loader size="lg" label="Loading Portfolio..." />}>
+                      <Portfolio />
+                    </Suspense>
+                  }
+                />
+                <Route
+                  path="settings"
+                  element={
+                    <Suspense fallback={<Loader size="lg" label="Loading Settings..." />}>
+                      <Settings />
+                    </Suspense>
+                  }
+                />
+                <Route path="coin/:id" element={<CoinDetails />} />
+              </Route>
+              <Route path="*" element={<NotFound />} />
+            </Routes>
+            <ToastContainer />
+          </div>
+        </BrowserRouter>
+      </AppProvider>
+    </ErrorBoundary>
   )
 }
 
