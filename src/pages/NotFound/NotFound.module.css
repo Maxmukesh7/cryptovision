@@ -1,0 +1,158 @@
+.container {
+  min-height: 100vh;
+  background: var(--color-bg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  overflow: hidden;
+}
+
+.content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 32px;
+  position: relative;
+  z-index: 1;
+  max-width: 500px;
+}
+
+.glowOrb {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -60%);
+  width: 500px;
+  height: 500px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(26, 111, 255, 0.12) 0%, transparent 70%);
+  pointer-events: none;
+  animation: glow 4s ease-in-out infinite;
+  z-index: -1;
+}
+
+@keyframes glow {
+  0%, 100% { opacity: 1; transform: translate(-50%, -60%) scale(1); }
+  50% { opacity: 0.6; transform: translate(-50%, -60%) scale(1.1); }
+}
+
+.errorCode {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  line-height: 1;
+}
+
+.digit {
+  font-size: 120px;
+  font-weight: 900;
+  color: var(--color-primary);
+  letter-spacing: -6px;
+  text-shadow: 0 0 40px rgba(26, 111, 255, 0.3);
+  animation: floatDigit 3s ease-in-out infinite;
+}
+
+.digit:last-child {
+  animation-delay: 0.4s;
+}
+
+.zeroWrapper {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--color-primary) 0%, #7c3aed 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 8px 40px rgba(26, 111, 255, 0.4);
+  animation: spin 8s linear infinite;
+  flex-shrink: 0;
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.zeroInner {
+  font-size: 56px;
+  font-weight: 900;
+  color: #fff;
+  animation: spinReverse 8s linear infinite;
+}
+
+@keyframes spinReverse {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(-360deg); }
+}
+
+@keyframes floatDigit {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+
+.textGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.heading {
+  font-size: 28px;
+  font-weight: 800;
+  color: var(--color-text-primary);
+  letter-spacing: -0.5px;
+}
+
+.description {
+  font-size: 15px;
+  color: var(--color-text-secondary);
+  line-height: 1.8;
+}
+
+.homeButton {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 28px;
+  background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);
+  color: #fff;
+  border-radius: var(--radius-md);
+  font-size: 15px;
+  font-weight: 600;
+  box-shadow: var(--shadow-primary);
+  transition: transform var(--transition-fast), box-shadow var(--transition-fast), opacity var(--transition-fast);
+  letter-spacing: 0.1px;
+}
+
+.homeButton:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 32px rgba(26, 111, 255, 0.45);
+}
+
+.homeButton:active {
+  transform: translateY(0);
+}
+
+.decorGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  opacity: 0.4;
+}
+
+.decorCell {
+  width: 12px;
+  height: 12px;
+  border-radius: 3px;
+  background: var(--color-primary);
+  animation: fadeScale 1.5s ease-in-out infinite alternate;
+}
+
+@keyframes fadeScale {
+  from { opacity: 0.2; transform: scale(0.8); }
+  to { opacity: 0.8; transform: scale(1.1); }
+}

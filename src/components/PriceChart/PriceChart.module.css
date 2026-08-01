@@ -1,0 +1,15 @@
+.chartWrapper {
+  padding: 20px 24px 16px;
+  width: 100%;
+}
+
+.chartWrapper canvas {
+  width: 100% !important;
+  max-height: 320px;
+}
+
+@media (max-width: 640px) {
+  .chartWrapper {
+    padding: 16px;
+  }
+}

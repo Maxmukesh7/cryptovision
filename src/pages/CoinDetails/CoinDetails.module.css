@@ -1,0 +1,363 @@
+.coinDetails {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+/* ── Header ── */
+.pageHeader {
+  display: flex;
+  align-items: center;
+}
+
+.backButton {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--color-text-secondary);
+  font-size: 14px;
+  font-weight: 500;
+  padding: 8px 14px;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--color-border);
+  background: var(--color-surface);
+  transition: all var(--transition-fast);
+  box-shadow: var(--shadow-sm);
+}
+
+.backButton:hover {
+  color: var(--color-primary);
+  border-color: var(--color-primary);
+  background: var(--color-primary-glow);
+  transform: translateX(-2px);
+}
+
+/* ── Center state (loading / error) ── */
+.centerState {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 24px;
+  min-height: 400px;
+}
+
+/* ── Hero ── */
+.coinHero {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: 28px 32px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  box-shadow: var(--shadow-md);
+  flex-wrap: wrap;
+}
+
+.coinIdentity {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.coinLogoImg {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  object-fit: contain;
+  flex-shrink: 0;
+  border: 2px solid var(--color-border);
+  background: var(--color-surface-alt);
+}
+
+.coinLogo {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--color-primary) 0%, #7c3aed 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  font-weight: 800;
+  color: #fff;
+  box-shadow: var(--shadow-primary);
+  flex-shrink: 0;
+}
+
+.coinMeta {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.coinName {
+  font-size: 28px;
+  font-weight: 800;
+  color: var(--color-text-primary);
+  letter-spacing: -0.5px;
+}
+
+.coinBadges {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.badge {
+  padding: 4px 10px;
+  border-radius: 99px;
+  font-size: 12px;
+  font-weight: 600;
+  background: var(--color-surface-alt);
+  color: var(--color-text-secondary);
+  border: 1px solid var(--color-border);
+}
+
+.badgeLive {
+  color: var(--color-success);
+  background: var(--color-success-light);
+  border-color: rgba(16, 185, 129, 0.2);
+}
+
+.badgeLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  text-decoration: none;
+  transition: color var(--transition-fast), border-color var(--transition-fast);
+}
+
+.badgeLink:hover {
+  color: var(--color-primary);
+  border-color: var(--color-primary);
+}
+
+/* ── Hero price ── */
+.heroPriceBlock {
+  text-align: right;
+}
+
+.currentPrice {
+  font-size: 32px;
+  font-weight: 800;
+  color: var(--color-text-primary);
+  letter-spacing: -0.8px;
+  font-variant-numeric: tabular-nums;
+}
+
+.priceChange {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  justify-content: flex-end;
+  margin-top: 6px;
+}
+
+.changeValue {
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.positive { color: var(--color-success); }
+.negative { color: var(--color-danger); }
+.neutral  { color: var(--color-text-muted); }
+
+.changePeriod {
+  font-size: 12px;
+  color: var(--color-text-muted);
+  background: var(--color-surface-alt);
+  padding: 3px 8px;
+  border-radius: 99px;
+  border: 1px solid var(--color-border);
+}
+
+/* ── Stats grid ── */
+.statsGrid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 14px;
+}
+
+.statCard {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: 18px 20px;
+  box-shadow: var(--shadow-sm);
+  transition: transform var(--transition-base), box-shadow var(--transition-base);
+}
+
+.statCard:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+.statLabel {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--color-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  margin-bottom: 8px;
+}
+
+.statValue {
+  font-size: 17px;
+  font-weight: 700;
+  color: var(--color-text-primary);
+  letter-spacing: -0.3px;
+  font-variant-numeric: tabular-nums;
+  line-height: 1.2;
+  word-break: break-word;
+}
+
+.statSub {
+  font-size: 12px;
+  font-weight: 600;
+  margin-top: 5px;
+}
+
+/* ── Chart ── */
+.chartSection {
+  display: flex;
+  flex-direction: column;
+}
+
+.chartCard {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-md);
+  overflow: hidden;
+}
+
+.chartCardHeader {
+  padding: 20px 24px 0;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.chartTitle {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--color-text-primary);
+}
+
+.chartSubtitle {
+  font-size: 12px;
+  color: var(--color-text-muted);
+  margin-top: 2px;
+}
+
+.chartBadge {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--color-success);
+  background: var(--color-success-light);
+  border: 1px solid rgba(16, 185, 129, 0.2);
+  padding: 5px 10px;
+  border-radius: 99px;
+  white-space: nowrap;
+}
+
+.chartBadgeDot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--color-success);
+  animation: pulse 2s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.4); }
+  50% { box-shadow: 0 0 0 5px rgba(16, 185, 129, 0); }
+}
+
+.chartLoader {
+  display: flex;
+  justify-content: center;
+  padding: 40px;
+}
+
+/* ── About ── */
+.infoSection {
+  display: flex;
+  flex-direction: column;
+}
+
+.infoCard {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: 24px;
+  box-shadow: var(--shadow-sm);
+}
+
+.infoTitle {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--color-text-primary);
+  margin-bottom: 12px;
+}
+
+.infoText {
+  font-size: 14px;
+  color: var(--color-text-secondary);
+  line-height: 1.85;
+}
+
+.infoText a {
+  color: var(--color-primary);
+  text-decoration: none;
+}
+
+.infoText a:hover {
+  text-decoration: underline;
+}
+
+/* ── Responsive ── */
+@media (max-width: 1100px) {
+  .statsGrid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (max-width: 768px) {
+  .statsGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .coinHero {
+    padding: 20px;
+  }
+
+  .heroPriceBlock {
+    text-align: left;
+  }
+
+  .priceChange {
+    justify-content: flex-start;
+  }
+
+  .currentPrice {
+    font-size: 26px;
+  }
+}
+
+@media (max-width: 480px) {
+  .statsGrid {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .coinName {
+    font-size: 22px;
+  }
+}
