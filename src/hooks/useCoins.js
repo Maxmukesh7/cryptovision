@@ -11,11 +11,11 @@ function useCoins() {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
 
-  const fetchData = useCallback(async () => {
+  const fetchData = useCallback(async (forceRefresh = false) => {
     setLoading(true)
     setError(null)
     try {
-      const data = await fetchTopCoins()
+      const data = await fetchTopCoins(forceRefresh)
       setCoins(data)
     } catch (err) {
       const message =
@@ -29,10 +29,14 @@ function useCoins() {
   }, [])
 
   useEffect(() => {
-    fetchData()
+    fetchData(false)
   }, [fetchData])
 
-  return { coins, loading, error, refetch: fetchData }
+  const refetch = useCallback(() => {
+    return fetchData(true)
+  }, [fetchData])
+
+  return { coins, loading, error, refetch }
 }
 
 export default useCoins

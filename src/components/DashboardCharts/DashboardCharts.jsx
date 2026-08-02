@@ -3,6 +3,7 @@ import {
   Chart as ChartJS,
   CategoryScale,
   LinearScale,
+  LogarithmicScale,
   BarElement,
   PointElement,
   LineElement,
@@ -19,6 +20,7 @@ import styles from './DashboardCharts.module.css'
 ChartJS.register(
   CategoryScale,
   LinearScale,
+  LogarithmicScale,
   BarElement,
   PointElement,
   LineElement,
@@ -134,7 +136,7 @@ function DashboardCharts({ coins = [] }) {
     datasets: [
       {
         label: 'Current Price (USD)',
-        data: top10.map((c) => c.current_price),
+        data: top10.map((c) => (c.current_price && c.current_price > 0 ? c.current_price : 0.0001)),
         borderColor: '#1a6fff',
         backgroundColor: 'rgba(26, 111, 255, 0.1)',
         fill: true,
@@ -157,12 +159,19 @@ function DashboardCharts({ coins = [] }) {
       },
     },
     scales: {
-      x: { grid: { display: false } },
+      x: {
+        grid: { display: false },
+        ticks: { font: { family: 'Inter, sans-serif' } },
+      },
       y: {
         type: 'logarithmic',
         grid: { color: 'rgba(226, 232, 248, 0.6)' },
         ticks: {
-          callback: (value) => formatCurrency(value, 0),
+          font: { family: 'Inter, sans-serif' },
+          callback: (value) => {
+            if (value >= 1) return formatCurrency(value, 0)
+            return formatCurrency(value, 2)
+          },
         },
       },
     },

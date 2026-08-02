@@ -19,15 +19,15 @@ function useCoinDetails(coinId) {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
 
-  const fetchData = useCallback(async () => {
+  const fetchData = useCallback(async (forceRefresh = false) => {
     if (!coinId) return
     setLoading(true)
     setError(null)
 
     try {
       const [details, marketChart] = await Promise.all([
-        getCoinDetails(coinId),
-        getCoinMarketChart(coinId),
+        getCoinDetails(coinId, forceRefresh),
+        getCoinMarketChart(coinId, forceRefresh),
       ])
 
       setCoin(details)
@@ -51,10 +51,14 @@ function useCoinDetails(coinId) {
   }, [coinId])
 
   useEffect(() => {
-    fetchData()
+    fetchData(false)
   }, [fetchData])
 
-  return { coin, chartData, loading, error, refetch: fetchData }
+  const refetch = useCallback(() => {
+    return fetchData(true)
+  }, [coinId, fetchData])
+
+  return { coin, chartData, loading, error, refetch }
 }
 
 export default useCoinDetails

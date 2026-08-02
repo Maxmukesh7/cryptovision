@@ -172,11 +172,11 @@ function generateSyntheticPrices(basePrice = 50000) {
 // Public API Functions
 // ─────────────────────────────────────────────────────────────────
 
-export async function fetchTopCoins() {
+export async function fetchTopCoins(forceRefresh = false) {
   const cacheKey = CACHE_KEYS.topCoins
   const cached = readCache(cacheKey)
 
-  if (cached && !cached.isExpired) {
+  if (!forceRefresh && cached && !cached.isExpired) {
     return cached.data
   }
 
@@ -200,11 +200,11 @@ export async function fetchTopCoins() {
   }
 }
 
-export async function getCoinDetails(id) {
+export async function getCoinDetails(id, forceRefresh = false) {
   const cacheKey = CACHE_KEYS.coinDetail(id)
   const cached = readCache(cacheKey)
 
-  if (cached && !cached.isExpired) {
+  if (!forceRefresh && cached && !cached.isExpired) {
     return cached.data
   }
 
@@ -248,11 +248,11 @@ export async function getCoinDetails(id) {
   }
 }
 
-export async function getCoinMarketChart(id) {
+export async function getCoinMarketChart(id, forceRefresh = false) {
   const cacheKey = CACHE_KEYS.coinChart(id)
   const cached = readCache(cacheKey)
 
-  if (cached && !cached.isExpired) {
+  if (!forceRefresh && cached && !cached.isExpired) {
     return cached.data
   }
 
