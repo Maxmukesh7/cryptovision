@@ -1,7 +1,7 @@
 .coinDetails {
   display: flex;
   flex-direction: column;
-  gap: 24px;
+  gap: 28px;
 }
 
 /* ── Header ── */
@@ -17,11 +17,13 @@
   gap: 8px;
   color: var(--color-text-secondary);
   font-size: 14px;
-  font-weight: 500;
-  padding: 8px 14px;
+  font-weight: 700;
+  padding: 10px 18px;
   border-radius: var(--radius-md);
   border: 1px solid var(--color-border);
-  background: var(--color-surface);
+  background: var(--color-surface-glass);
+  backdrop-filter: var(--glass-backdrop);
+  -webkit-backdrop-filter: var(--glass-backdrop);
   transition: all var(--transition-fast);
   box-shadow: var(--shadow-sm);
 }
@@ -30,27 +32,30 @@
   color: var(--color-primary);
   border-color: var(--color-primary);
   background: var(--color-primary-glow);
-  transform: translateX(-2px);
+  transform: translateX(-3px);
 }
 
 .watchlistBtn {
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  padding: 8px 16px;
+  padding: 10px 20px;
   border-radius: var(--radius-md);
   border: 1px solid var(--color-border);
-  background: var(--color-surface);
+  background: var(--color-surface-glass);
+  backdrop-filter: var(--glass-backdrop);
+  -webkit-backdrop-filter: var(--glass-backdrop);
   color: var(--color-text-primary);
   font-size: 14px;
-  font-weight: 600;
+  font-weight: 700;
   box-shadow: var(--shadow-sm);
   transition: all var(--transition-fast);
 }
 
 .watchlistBtn:hover {
   border-color: #f59e0b;
-  background: rgba(245, 158, 11, 0.08);
+  background: rgba(245, 158, 11, 0.12);
+  transform: translateY(-1px);
 }
 
 /* ── Center state (loading / error) ── */
@@ -64,43 +69,52 @@
 
 /* ── Hero ── */
 .coinHero {
-  background: var(--color-surface);
+  background: var(--color-surface-glass);
+  backdrop-filter: var(--glass-backdrop);
+  -webkit-backdrop-filter: var(--glass-backdrop);
   border: 1px solid var(--color-border);
-  border-radius: var(--radius-lg);
-  padding: 28px 32px;
+  border-radius: var(--radius-xl);
+  padding: 32px 36px;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 24px;
-  box-shadow: var(--shadow-md);
+  gap: 28px;
+  box-shadow: var(--shadow-sm);
   flex-wrap: wrap;
+  transition: all var(--transition-base);
+}
+
+.coinHero:hover {
+  border-color: var(--color-border-hover);
+  box-shadow: var(--shadow-md);
 }
 
 .coinIdentity {
   display: flex;
   align-items: center;
-  gap: 16px;
+  gap: 20px;
 }
 
 .coinLogoImg {
-  width: 64px;
-  height: 64px;
+  width: 68px;
+  height: 68px;
   border-radius: 50%;
   object-fit: contain;
   flex-shrink: 0;
   border: 2px solid var(--color-border);
   background: var(--color-surface-alt);
+  box-shadow: var(--shadow-sm);
 }
 
 .coinLogo {
-  width: 64px;
-  height: 64px;
+  width: 68px;
+  height: 68px;
   border-radius: 50%;
-  background: linear-gradient(135deg, var(--color-primary) 0%, #7c3aed 100%);
+  background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-accent-purple) 100%);
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 20px;
+  font-size: 22px;
   font-weight: 800;
   color: #fff;
   box-shadow: var(--shadow-primary);
@@ -110,28 +124,28 @@
 .coinMeta {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 10px;
 }
 
 .coinName {
-  font-size: 28px;
+  font-size: 32px;
   font-weight: 800;
   color: var(--color-text-primary);
-  letter-spacing: -0.5px;
+  letter-spacing: -0.8px;
 }
 
 .coinBadges {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 10px;
   flex-wrap: wrap;
 }
 
 .badge {
-  padding: 4px 10px;
+  padding: 5px 12px;
   border-radius: 99px;
   font-size: 12px;
-  font-weight: 600;
+  font-weight: 700;
   background: var(--color-surface-alt);
   color: var(--color-text-secondary);
   border: 1px solid var(--color-border);
@@ -140,15 +154,15 @@
 .badgeLive {
   color: var(--color-success);
   background: var(--color-success-light);
-  border-color: rgba(16, 185, 129, 0.2);
+  border-color: rgba(16, 185, 129, 0.3);
 }
 
 .badgeLink {
   display: inline-flex;
   align-items: center;
-  gap: 4px;
+  gap: 6px;
   text-decoration: none;
-  transition: color var(--transition-fast), border-color var(--transition-fast);
+  transition: all var(--transition-fast);
 }
 
 .badgeLink:hover {
@@ -162,24 +176,24 @@
 }
 
 .currentPrice {
-  font-size: 32px;
+  font-size: 36px;
   font-weight: 800;
   color: var(--color-text-primary);
-  letter-spacing: -0.8px;
+  letter-spacing: -1px;
   font-variant-numeric: tabular-nums;
 }
 
 .priceChange {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 10px;
   justify-content: flex-end;
   margin-top: 6px;
 }
 
 .changeValue {
-  font-size: 14px;
-  font-weight: 700;
+  font-size: 15px;
+  font-weight: 800;
 }
 
 .positive { color: var(--color-success); }
@@ -188,9 +202,10 @@
 
 .changePeriod {
   font-size: 12px;
+  font-weight: 700;
   color: var(--color-text-muted);
   background: var(--color-surface-alt);
-  padding: 3px 8px;
+  padding: 3px 9px;
   border-radius: 99px;
   border: 1px solid var(--color-border);
 }
@@ -199,46 +214,49 @@
 .statsGrid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  gap: 14px;
+  gap: 18px;
 }
 
 .statCard {
-  background: var(--color-surface);
+  background: var(--color-surface-glass);
+  backdrop-filter: var(--glass-backdrop);
+  -webkit-backdrop-filter: var(--glass-backdrop);
   border: 1px solid var(--color-border);
-  border-radius: var(--radius-md);
-  padding: 18px 20px;
+  border-radius: var(--radius-lg);
+  padding: 20px 22px;
   box-shadow: var(--shadow-sm);
-  transition: transform var(--transition-base), box-shadow var(--transition-base);
+  transition: all var(--transition-base);
 }
 
 .statCard:hover {
-  transform: translateY(-2px);
+  transform: translateY(-3px);
+  border-color: var(--color-border-hover);
   box-shadow: var(--shadow-md);
 }
 
 .statLabel {
   font-size: 11px;
-  font-weight: 700;
+  font-weight: 800;
   color: var(--color-text-muted);
   text-transform: uppercase;
-  letter-spacing: 0.6px;
+  letter-spacing: 0.8px;
   margin-bottom: 8px;
 }
 
 .statValue {
-  font-size: 17px;
-  font-weight: 700;
+  font-size: 18px;
+  font-weight: 800;
   color: var(--color-text-primary);
-  letter-spacing: -0.3px;
+  letter-spacing: -0.4px;
   font-variant-numeric: tabular-nums;
-  line-height: 1.2;
+  line-height: 1.25;
   word-break: break-word;
 }
 
 .statSub {
-  font-size: 12px;
-  font-weight: 600;
-  margin-top: 5px;
+  font-size: 13px;
+  font-weight: 700;
+  margin-top: 6px;
 }
 
 /* ── Chart ── */
@@ -248,64 +266,64 @@
 }
 
 .chartCard {
-  background: var(--color-surface);
+  background: var(--color-surface-glass);
+  backdrop-filter: var(--glass-backdrop);
+  -webkit-backdrop-filter: var(--glass-backdrop);
   border: 1px solid var(--color-border);
-  border-radius: var(--radius-lg);
-  box-shadow: var(--shadow-md);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-sm);
   overflow: hidden;
 }
 
 .chartCardHeader {
-  padding: 20px 24px 0;
+  padding: 24px 28px 0;
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
-  gap: 12px;
+  gap: 14px;
 }
 
 .chartTitle {
-  font-size: 16px;
-  font-weight: 700;
+  font-size: 18px;
+  font-weight: 800;
   color: var(--color-text-primary);
+  letter-spacing: -0.4px;
 }
 
 .chartSubtitle {
-  font-size: 12px;
+  font-size: 13px;
   color: var(--color-text-muted);
+  font-weight: 500;
   margin-top: 2px;
 }
 
 .chartBadge {
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 8px;
   font-size: 12px;
-  font-weight: 600;
+  font-weight: 800;
   color: var(--color-success);
   background: var(--color-success-light);
-  border: 1px solid rgba(16, 185, 129, 0.2);
-  padding: 5px 10px;
+  border: 1px solid rgba(16, 185, 129, 0.3);
+  padding: 6px 12px;
   border-radius: 99px;
   white-space: nowrap;
 }
 
 .chartBadgeDot {
-  width: 7px;
-  height: 7px;
+  width: 8px;
+  height: 8px;
   border-radius: 50%;
   background: var(--color-success);
-  animation: pulse 2s ease-in-out infinite;
-}
-
-@keyframes pulse {
-  0%, 100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.4); }
-  50% { box-shadow: 0 0 0 5px rgba(16, 185, 129, 0); }
+  box-shadow: 0 0 6px rgba(16, 185, 129, 0.6);
+  animation: pulseGlow 2s ease-in-out infinite;
 }
 
 .chartLoader {
   display: flex;
   justify-content: center;
-  padding: 40px;
+  padding: 48px;
 }
 
 /* ── About ── */
@@ -315,24 +333,28 @@
 }
 
 .infoCard {
-  background: var(--color-surface);
+  background: var(--color-surface-glass);
+  backdrop-filter: var(--glass-backdrop);
+  -webkit-backdrop-filter: var(--glass-backdrop);
   border: 1px solid var(--color-border);
-  border-radius: var(--radius-lg);
-  padding: 24px;
+  border-radius: var(--radius-xl);
+  padding: 28px;
   box-shadow: var(--shadow-sm);
 }
 
 .infoTitle {
-  font-size: 16px;
-  font-weight: 700;
+  font-size: 18px;
+  font-weight: 800;
   color: var(--color-text-primary);
-  margin-bottom: 12px;
+  margin-bottom: 14px;
+  letter-spacing: -0.4px;
 }
 
 .infoText {
   font-size: 14px;
   color: var(--color-text-secondary);
   line-height: 1.85;
+  font-weight: 500;
 }
 
 .infoText a {
@@ -357,7 +379,7 @@
   }
 
   .coinHero {
-    padding: 20px;
+    padding: 24px;
   }
 
   .heroPriceBlock {
@@ -369,7 +391,7 @@
   }
 
   .currentPrice {
-    font-size: 26px;
+    font-size: 28px;
   }
 }
 
@@ -379,6 +401,6 @@
   }
 
   .coinName {
-    font-size: 22px;
+    font-size: 24px;
   }
 }

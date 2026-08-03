@@ -1,31 +1,39 @@
 .widgetsGrid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  gap: 20px;
+  gap: 24px;
 }
 
 .widgetCard {
-  background: var(--color-surface);
+  background: var(--color-surface-glass);
+  backdrop-filter: var(--glass-backdrop);
+  -webkit-backdrop-filter: var(--glass-backdrop);
   border: 1px solid var(--color-border);
-  border-radius: var(--radius-lg);
-  padding: 20px 24px;
-  box-shadow: var(--shadow-md);
+  border-radius: var(--radius-xl);
+  padding: 24px;
+  box-shadow: var(--shadow-sm);
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 18px;
+  transition: all var(--transition-base);
+}
+
+.widgetCard:hover {
+  border-color: var(--color-border-hover);
+  box-shadow: var(--shadow-md);
 }
 
 .widgetHeader {
   display: flex;
   align-items: center;
-  gap: 12px;
-  padding-bottom: 12px;
+  gap: 14px;
+  padding-bottom: 14px;
   border-bottom: 1px solid var(--color-border);
 }
 
 .iconBadge {
-  width: 40px;
-  height: 40px;
+  width: 44px;
+  height: 44px;
   border-radius: var(--radius-md);
   background: var(--color-primary-glow);
   color: var(--color-primary);
@@ -33,28 +41,31 @@
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
+  box-shadow: var(--shadow-sm);
 }
 
 .zapIcon {
-  background: rgba(245, 158, 11, 0.12);
+  background: rgba(245, 158, 11, 0.15);
   color: #f59e0b;
 }
 
 .widgetTitle {
-  font-size: 16px;
-  font-weight: 700;
+  font-size: 18px;
+  font-weight: 800;
   color: var(--color-text-primary);
+  letter-spacing: -0.3px;
 }
 
 .widgetSubtitle {
-  font-size: 12px;
+  font-size: 13px;
   color: var(--color-text-muted);
+  font-weight: 500;
 }
 
 .sentimentBody {
   display: flex;
   flex-direction: column;
-  gap: 14px;
+  gap: 16px;
 }
 
 .statusDisplay {
@@ -64,146 +75,159 @@
 }
 
 .statusLabel {
-  font-size: 13px;
-  font-weight: 600;
+  font-size: 14px;
+  font-weight: 700;
   color: var(--color-text-secondary);
 }
 
 .statusPill {
-  padding: 4px 12px;
+  padding: 5px 14px;
   border-radius: 99px;
   font-size: 13px;
-  font-weight: 700;
+  font-weight: 800;
+  letter-spacing: 0.5px;
 }
 
 .bullishStatus {
   background: var(--color-success-light);
   color: var(--color-success);
+  border: 1px solid rgba(16, 185, 129, 0.3);
 }
 
 .bearishStatus {
   background: var(--color-danger-light);
   color: var(--color-danger);
+  border: 1px solid rgba(239, 68, 68, 0.3);
 }
 
 .neutralStatus {
   background: var(--color-surface-alt);
   color: var(--color-text-muted);
+  border: 1px solid var(--color-border);
 }
 
 .meterBar {
   display: flex;
-  height: 10px;
+  height: 12px;
   border-radius: 99px;
   overflow: hidden;
   background: var(--color-surface-alt);
+  padding: 2px;
+  border: 1px solid var(--color-border);
 }
 
 .bullishBar {
-  background: var(--color-success);
-  transition: width 0.4s ease;
+  background: linear-gradient(90deg, #10b981 0%, #34d399 100%);
+  border-radius: 99px 0 0 99px;
+  transition: width 0.5s ease;
 }
 
 .bearishBar {
-  background: var(--color-danger);
-  transition: width 0.4s ease;
+  background: linear-gradient(90deg, #f87171 0%, #ef4444 100%);
+  border-radius: 0 99px 99px 0;
+  transition: width 0.5s ease;
 }
 
 .pctRow {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  font-size: 12px;
-  font-weight: 600;
+  font-size: 13px;
+  font-weight: 700;
   color: var(--color-text-secondary);
 }
 
 .pctItem {
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 8px;
 }
 
 .dotBullish {
-  width: 8px;
-  height: 8px;
+  width: 10px;
+  height: 10px;
   border-radius: 50%;
   background: var(--color-success);
+  box-shadow: 0 0 6px rgba(16, 185, 129, 0.6);
 }
 
 .dotBearish {
-  width: 8px;
-  height: 8px;
+  width: 10px;
+  height: 10px;
   border-radius: 50%;
   background: var(--color-danger);
+  box-shadow: 0 0 6px rgba(239, 68, 68, 0.6);
 }
 
 .quickGrid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  gap: 12px;
+  gap: 14px;
 }
 
 .quickItem {
   background: var(--color-surface-alt);
   border: 1px solid var(--color-border);
-  border-radius: var(--radius-md);
-  padding: 12px;
+  border-radius: var(--radius-lg);
+  padding: 14px;
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 8px;
   cursor: pointer;
-  transition: background var(--transition-fast), transform var(--transition-fast);
+  transition: all var(--transition-fast);
 }
 
 .quickItem:hover {
   background: var(--color-surface);
-  transform: translateY(-1px);
+  border-color: var(--color-primary-light);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-sm);
 }
 
 .quickLabel {
   font-size: 11px;
-  font-weight: 700;
+  font-weight: 800;
   color: var(--color-text-muted);
   text-transform: uppercase;
+  letter-spacing: 0.5px;
 }
 
 .quickCoin {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 10px;
 }
 
 .miniLogo {
-  width: 20px;
-  height: 20px;
+  width: 22px;
+  height: 22px;
   border-radius: 50%;
 }
 
 .quickName {
-  font-size: 13px;
-  font-weight: 700;
+  font-size: 14px;
+  font-weight: 800;
   color: var(--color-text-primary);
 }
 
 .positiveVal {
   margin-left: auto;
-  font-size: 12px;
-  font-weight: 700;
+  font-size: 13px;
+  font-weight: 800;
   color: var(--color-success);
 }
 
 .negativeVal {
   margin-left: auto;
-  font-size: 12px;
-  font-weight: 700;
+  font-size: 13px;
+  font-weight: 800;
   color: var(--color-danger);
 }
 
 .neutralVal {
   margin-left: auto;
-  font-size: 12px;
-  font-weight: 700;
+  font-size: 13px;
+  font-weight: 800;
   color: var(--color-text-primary);
 }
 

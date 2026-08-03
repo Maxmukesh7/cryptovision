@@ -1,5 +1,6 @@
 import React from 'react'
 import { useApp } from '../../context/AppContext'
+import BrandLogo from '../BrandLogo/BrandLogo'
 import styles from './Navbar.module.css'
 
 const MenuIcon = () => (
@@ -7,6 +8,13 @@ const MenuIcon = () => (
     <line x1="3" y1="6" x2="21" y2="6" />
     <line x1="3" y1="12" x2="21" y2="12" />
     <line x1="3" y1="18" x2="21" y2="18" />
+  </svg>
+)
+
+const SearchIcon = () => (
+  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round">
+    <circle cx="11" cy="11" r="8" />
+    <line x1="21" y1="21" x2="16.65" y2="16.65" />
   </svg>
 )
 
@@ -53,24 +61,18 @@ function Navbar({ onToggleSidebar }) {
           <MenuIcon />
         </button>
 
-        <div className={styles.brand}>
-          <div className={styles.logoMark}>
-            <span>CV</span>
-          </div>
-          <span className={styles.brandName}>
-            Crypto<span className={styles.brandAccent}>Vision</span>
-          </span>
-        </div>
+        <BrandLogo size={28} />
       </div>
 
       <div className={styles.right}>
-        {/* Shortcut Quick Focus */}
+        {/* Quick Search Shortcut Badge */}
         <button
           className={styles.shortcutBadge}
           onClick={handleShortcutClick}
           title="Press Ctrl+K to Search"
         >
-          <span>Search</span>
+          <SearchIcon />
+          <span>Quick Search...</span>
           <kbd>Ctrl+K</kbd>
         </button>
 
@@ -100,10 +102,6 @@ function Navbar({ onToggleSidebar }) {
           title={`Switch to ${theme === 'light' ? 'dark' : 'light'} mode`}
         >
           {theme === 'light' ? <MoonIcon /> : <SunIcon />}
-        </button>
-
-        <button id="profile-avatar" className={styles.avatar} aria-label="Profile">
-          <span>MK</span>
         </button>
       </div>
     </header>

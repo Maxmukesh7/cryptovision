@@ -1,82 +1,91 @@
 .moversGrid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  gap: 20px;
+  gap: 24px;
 }
 
 .moversCard {
-  background: var(--color-surface);
+  background: var(--color-surface-glass);
+  backdrop-filter: var(--glass-backdrop);
+  -webkit-backdrop-filter: var(--glass-backdrop);
   border: 1px solid var(--color-border);
-  border-radius: var(--radius-lg);
-  padding: 20px 24px;
-  box-shadow: var(--shadow-md);
+  border-radius: var(--radius-xl);
+  padding: 24px;
+  box-shadow: var(--shadow-sm);
   display: flex;
   flex-direction: column;
-  gap: 16px;
-  transition: transform var(--transition-base), box-shadow var(--transition-base);
+  gap: 18px;
+  transition: all var(--transition-base);
 }
 
 .moversCard:hover {
-  box-shadow: var(--shadow-lg);
+  border-color: var(--color-border-hover);
+  box-shadow: var(--shadow-md);
 }
 
 .cardHeader {
   display: flex;
   align-items: center;
-  gap: 12px;
-  padding-bottom: 12px;
+  gap: 14px;
+  padding-bottom: 14px;
   border-bottom: 1px solid var(--color-border);
 }
 
 .iconWrapper {
-  width: 40px;
-  height: 40px;
+  width: 44px;
+  height: 44px;
   border-radius: var(--radius-md);
   display: flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
+  box-shadow: var(--shadow-sm);
 }
 
 .gainerIcon {
   background: var(--color-success-light);
   color: var(--color-success);
+  border: 1px solid rgba(16, 185, 129, 0.3);
 }
 
 .loserIcon {
   background: var(--color-danger-light);
   color: var(--color-danger);
+  border: 1px solid rgba(239, 68, 68, 0.3);
 }
 
 .cardTitle {
-  font-size: 15px;
-  font-weight: 700;
+  font-size: 18px;
+  font-weight: 800;
   color: var(--color-text-primary);
+  letter-spacing: -0.3px;
 }
 
 .cardSubtitle {
-  font-size: 12px;
+  font-size: 13px;
   color: var(--color-text-muted);
+  font-weight: 500;
 }
 
 .moverList {
   display: flex;
   flex-direction: column;
+  gap: 4px;
 }
 
 .moverRow {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 10px 8px;
+  padding: 12px 10px;
   border-radius: var(--radius-md);
   cursor: pointer;
-  transition: background var(--transition-fast);
-
+  transition: all var(--transition-fast);
 }
 
 .moverRow:hover {
   background: var(--color-surface-alt);
+  transform: translateX(4px);
 }
 
 .moverRow:focus-visible {
@@ -90,8 +99,8 @@
 }
 
 .coinLogo {
-  width: 28px;
-  height: 28px;
+  width: 32px;
+  height: 32px;
   border-radius: 50%;
   object-fit: contain;
 }
@@ -102,35 +111,35 @@
 }
 
 .coinName {
-  font-size: 14px;
-  font-weight: 600;
+  font-size: 15px;
+  font-weight: 700;
   color: var(--color-text-primary);
 }
 
 .coinSymbol {
-  font-size: 11px;
-  font-weight: 600;
+  font-size: 12px;
+  font-weight: 700;
   color: var(--color-text-muted);
 }
 
 .coinPriceBlock {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 14px;
 }
 
 .coinPrice {
-  font-size: 14px;
-  font-weight: 600;
+  font-size: 15px;
+  font-weight: 800;
   color: var(--color-text-primary);
   font-variant-numeric: tabular-nums;
 }
 
 .changeBadge {
-  padding: 4px 10px;
+  padding: 4px 12px;
   border-radius: 99px;
   font-size: 12px;
-  font-weight: 700;
+  font-weight: 800;
 }
 
 .positive {

@@ -1,9 +1,17 @@
 .wrapper {
-  background: var(--color-surface);
+  background: var(--color-surface-glass);
+  backdrop-filter: var(--glass-backdrop);
+  -webkit-backdrop-filter: var(--glass-backdrop);
   border: 1px solid var(--color-border);
-  border-radius: var(--radius-lg);
-  box-shadow: var(--shadow-md);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-sm);
   overflow: hidden;
+  transition: all var(--transition-base);
+}
+
+.wrapper:hover {
+  border-color: var(--color-border-hover);
+  box-shadow: var(--shadow-md);
 }
 
 /* ── Toolbar ── */
@@ -11,9 +19,9 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 18px 24px;
+  padding: 20px 28px;
   border-bottom: 1px solid var(--color-border);
-  gap: 16px;
+  gap: 18px;
   flex-wrap: wrap;
 }
 
@@ -22,13 +30,13 @@
   display: flex;
   align-items: center;
   flex: 1;
-  min-width: 240px;
-  max-width: 340px;
+  min-width: 260px;
+  max-width: 380px;
 }
 
 .searchIcon {
   position: absolute;
-  left: 12px;
+  left: 14px;
   color: var(--color-text-muted);
   display: flex;
   align-items: center;
@@ -37,18 +45,19 @@
 
 .searchInput {
   width: 100%;
-  padding: 9px 36px 9px 38px;
+  padding: 10px 38px 10px 42px;
   border: 1px solid var(--color-border);
   border-radius: var(--radius-md);
   background: var(--color-surface-alt);
   font-size: 14px;
+  font-weight: 500;
   color: var(--color-text-primary);
-  transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+  transition: all var(--transition-fast);
 }
 
 .searchInput:focus {
   border-color: var(--color-primary);
-  box-shadow: 0 0 0 3px var(--color-primary-glow);
+  box-shadow: var(--shadow-primary);
   background: var(--color-surface);
 }
 
@@ -60,7 +69,7 @@
 
 .clearButton {
   position: absolute;
-  right: 10px;
+  right: 12px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -69,7 +78,7 @@
   border-radius: 50%;
   color: var(--color-text-muted);
   background: var(--color-border);
-  transition: background var(--transition-fast), color var(--transition-fast);
+  transition: all var(--transition-fast);
 }
 
 .clearButton:hover {
@@ -80,13 +89,13 @@
 /* ── Suggestions Dropdown ── */
 .suggestionsDropdown {
   position: absolute;
-  top: calc(100% + 4px);
+  top: calc(100% + 6px);
   left: 0;
   right: 0;
   background: var(--color-surface);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-md);
-  box-shadow: var(--shadow-lg);
+  box-shadow: 0 16px 36px -8px rgba(0, 0, 0, 0.2);
   z-index: 100;
   padding: 8px 0;
   animation: fadeIn 0.2s ease-out;
@@ -101,17 +110,18 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 6px 14px;
+  padding: 8px 16px;
   font-size: 11px;
-  font-weight: 700;
+  font-weight: 800;
   color: var(--color-text-muted);
   text-transform: uppercase;
+  letter-spacing: 0.5px;
 }
 
 .clearHistoryBtn {
   font-size: 11px;
   color: var(--color-primary);
-  font-weight: 600;
+  font-weight: 700;
 }
 
 .clearHistoryBtn:hover {
@@ -119,8 +129,9 @@
 }
 
 .suggestionItem {
-  padding: 8px 14px;
-  font-size: 13px;
+  padding: 10px 16px;
+  font-size: 14px;
+  font-weight: 600;
   color: var(--color-text-primary);
   cursor: pointer;
   transition: background var(--transition-fast);
@@ -133,21 +144,21 @@
 .controlsGroup {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 14px;
   flex-wrap: wrap;
 }
 
 .filterToggleBtn {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
-  padding: 8px 14px;
+  gap: 8px;
+  padding: 9px 16px;
   border-radius: var(--radius-md);
   border: 1px solid var(--color-border);
   background: var(--color-surface-alt);
   color: var(--color-text-secondary);
   font-size: 13px;
-  font-weight: 600;
+  font-weight: 700;
   transition: all var(--transition-fast);
 }
 
@@ -161,47 +172,48 @@
 .selectWrapper {
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 8px;
 }
 
 .selectLabel {
   font-size: 13px;
   color: var(--color-text-muted);
-  font-weight: 500;
+  font-weight: 600;
 }
 
 .selectInput {
-  padding: 8px 12px;
+  padding: 9px 14px;
   border-radius: var(--radius-md);
   border: 1px solid var(--color-border);
   background: var(--color-surface-alt);
   color: var(--color-text-primary);
   font-size: 13px;
-  font-weight: 500;
+  font-weight: 700;
   cursor: pointer;
   outline: none;
-  transition: border-color var(--transition-fast);
+  transition: all var(--transition-fast);
 }
 
 .selectInput:focus {
   border-color: var(--color-primary);
+  box-shadow: var(--shadow-sm);
 }
 
 .resultCount {
   font-size: 13px;
   color: var(--color-text-muted);
-  font-weight: 500;
+  font-weight: 600;
   white-space: nowrap;
 }
 
 /* ── Advanced Filters Panel ── */
 .advancedFiltersPanel {
-  padding: 16px 24px;
+  padding: 20px 28px;
   background: var(--color-surface-alt);
   border-bottom: 1px solid var(--color-border);
   display: flex;
   align-items: center;
-  gap: 24px;
+  gap: 28px;
   flex-wrap: wrap;
   animation: expandDown 0.2s ease-out;
 }
@@ -214,29 +226,29 @@
 .filterGroup {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 10px;
 }
 
 .filterLabel {
   font-size: 12px;
-  font-weight: 700;
+  font-weight: 800;
   color: var(--color-text-secondary);
   white-space: nowrap;
 }
 
 .chipGroup {
   display: flex;
-  gap: 6px;
+  gap: 8px;
 }
 
 .chip {
-  padding: 4px 10px;
+  padding: 5px 14px;
   border-radius: 99px;
   border: 1px solid var(--color-border);
   background: var(--color-surface);
   color: var(--color-text-secondary);
   font-size: 12px;
-  font-weight: 600;
+  font-weight: 700;
   transition: all var(--transition-fast);
 }
 
@@ -245,16 +257,18 @@
   background: var(--color-primary);
   color: #ffffff;
   border-color: var(--color-primary);
+  box-shadow: var(--shadow-primary);
 }
 
 .filterInput {
-  width: 100px;
-  padding: 5px 8px;
+  width: 110px;
+  padding: 6px 10px;
   border-radius: var(--radius-sm);
   border: 1px solid var(--color-border);
   background: var(--color-surface);
   color: var(--color-text-primary);
-  font-size: 12px;
+  font-size: 13px;
+  font-weight: 600;
   outline: none;
 }
 
@@ -263,8 +277,8 @@
 }
 
 .resetFiltersBtn {
-  font-size: 12px;
-  font-weight: 700;
+  font-size: 13px;
+  font-weight: 800;
   color: var(--color-danger);
   margin-left: auto;
 }
@@ -284,7 +298,7 @@
 .table {
   width: 100%;
   border-collapse: collapse;
-  min-width: 740px;
+  min-width: 780px;
 }
 
 /* ── Head ── */
@@ -293,12 +307,12 @@
 }
 
 .table th {
-  padding: 12px 16px;
+  padding: 14px 20px;
   font-size: 11px;
-  font-weight: 700;
+  font-weight: 800;
   color: var(--color-text-muted);
   text-transform: uppercase;
-  letter-spacing: 0.6px;
+  letter-spacing: 0.8px;
   border-bottom: 1px solid var(--color-border);
   white-space: nowrap;
   user-select: none;
@@ -306,7 +320,7 @@
 
 .thStar {
   text-align: center;
-  width: 44px;
+  width: 48px;
 }
 
 .sortableHeader {
@@ -316,24 +330,24 @@
 
 .sortableHeader:hover {
   color: var(--color-primary);
-  background: rgba(26, 111, 255, 0.04);
+  background: rgba(59, 130, 246, 0.08);
 }
 
 .sortArrowInactive {
-  margin-left: 4px;
+  margin-left: 6px;
   opacity: 0.3;
-  font-size: 10px;
+  font-size: 11px;
 }
 
 .sortArrowActive {
-  margin-left: 4px;
+  margin-left: 6px;
   color: var(--color-primary);
-  font-size: 10px;
+  font-size: 11px;
 }
 
 .thRank {
   text-align: center;
-  width: 56px;
+  width: 60px;
 }
 
 .thCoin {
@@ -347,7 +361,7 @@
 /* ── Body rows ── */
 .row {
   cursor: pointer;
-  transition: background var(--transition-fast);
+  transition: all var(--transition-fast);
   outline: none;
 }
 
@@ -362,7 +376,7 @@
 }
 
 .table td {
-  padding: 14px 16px;
+  padding: 16px 20px;
   font-size: 14px;
   color: var(--color-text-primary);
   border-bottom: 1px solid var(--color-border);
@@ -384,10 +398,10 @@
   align-items: center;
   justify-content: center;
   margin: 0 auto;
-  padding: 4px;
+  padding: 6px;
   border-radius: 50%;
   color: var(--color-text-muted);
-  transition: transform var(--transition-fast), color var(--transition-fast);
+  transition: all var(--transition-fast);
 }
 
 .starBtn:hover {
@@ -401,25 +415,25 @@
 }
 
 .rank {
-  font-size: 12px;
-  font-weight: 600;
+  font-size: 13px;
+  font-weight: 700;
   color: var(--color-text-muted);
 }
 
 /* ── Coin cell ── */
 .tdCoin {
-  min-width: 180px;
+  min-width: 200px;
 }
 
 .coinCell {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 14px;
 }
 
 .coinLogo {
-  width: 32px;
-  height: 32px;
+  width: 36px;
+  height: 36px;
   border-radius: 50%;
   flex-shrink: 0;
   object-fit: contain;
@@ -428,26 +442,27 @@
 .coinMeta {
   display: flex;
   flex-direction: column;
-  gap: 1px;
+  gap: 2px;
 }
 
 .coinName {
-  font-weight: 600;
+  font-weight: 700;
   color: var(--color-text-primary);
-  font-size: 14px;
+  font-size: 15px;
 }
 
 .coinSymbol {
-  font-size: 11px;
+  font-size: 12px;
   color: var(--color-text-muted);
-  font-weight: 600;
+  font-weight: 700;
   text-transform: uppercase;
+  letter-spacing: 0.5px;
 }
 
 /* ── Numeric cells ── */
 .tdNumeric {
   text-align: right;
-  font-weight: 500;
+  font-weight: 700;
   font-variant-numeric: tabular-nums;
   font-size: 14px;
 }
@@ -455,10 +470,10 @@
 /* ── Change badge ── */
 .changeBadge {
   display: inline-block;
-  padding: 3px 8px;
+  padding: 4px 10px;
   border-radius: 99px;
   font-size: 12px;
-  font-weight: 700;
+  font-weight: 800;
   letter-spacing: 0.2px;
 }
 
@@ -480,15 +495,16 @@
 /* ── Empty row ── */
 .emptyRow {
   text-align: center;
-  padding: 48px 24px !important;
+  padding: 56px 24px !important;
   color: var(--color-text-muted);
-  font-size: 14px;
+  font-size: 15px;
+  font-weight: 600;
 }
 
 /* ── Responsive ── */
 @media (max-width: 768px) {
   .toolbar {
-    padding: 14px 16px;
+    padding: 16px 20px;
     flex-direction: column;
     align-items: stretch;
   }

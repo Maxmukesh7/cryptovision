@@ -1,26 +1,34 @@
 .container {
   display: flex;
   flex-direction: column;
-  gap: 24px;
+  gap: 28px;
 }
 
 .header {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  padding: 24px 28px;
+  background: var(--color-surface-glass);
+  backdrop-filter: var(--glass-backdrop);
+  -webkit-backdrop-filter: var(--glass-backdrop);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-sm);
 }
 
 .title {
-  font-size: 26px;
+  font-size: 28px;
   font-weight: 800;
   color: var(--color-text-primary);
-  letter-spacing: -0.5px;
+  letter-spacing: -0.8px;
 }
 
 .subtitle {
   font-size: 14px;
   color: var(--color-text-muted);
-  margin-top: 2px;
+  font-weight: 500;
+  margin-top: 4px;
 }
 
 .loaderWrapper {
@@ -30,115 +38,123 @@
 }
 
 .selectorsCard {
-  background: var(--color-surface);
+  background: var(--color-surface-glass);
+  backdrop-filter: var(--glass-backdrop);
+  -webkit-backdrop-filter: var(--glass-backdrop);
   border: 1px solid var(--color-border);
-  border-radius: var(--radius-lg);
-  padding: 20px 24px;
+  border-radius: var(--radius-xl);
+  padding: 24px 28px;
   box-shadow: var(--shadow-sm);
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 16px;
+  gap: 20px;
 }
 
 .selectorBox {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 12px;
   flex: 1;
 }
 
 .selectLabel {
   font-size: 14px;
-  font-weight: 700;
+  font-weight: 800;
   color: var(--color-text-primary);
 }
 
 .selectInput {
   flex: 1;
-  padding: 10px 14px;
+  padding: 11px 16px;
   border-radius: var(--radius-md);
   border: 1px solid var(--color-border);
   background: var(--color-surface-alt);
   color: var(--color-text-primary);
   font-size: 14px;
-  font-weight: 600;
+  font-weight: 700;
   outline: none;
   cursor: pointer;
+  transition: all var(--transition-fast);
 }
 
 .selectInput:focus {
   border-color: var(--color-primary);
+  box-shadow: var(--shadow-primary);
 }
 
 .vsBadge {
-  width: 40px;
-  height: 40px;
+  width: 44px;
+  height: 44px;
   border-radius: 50%;
-  background: var(--color-primary-glow);
-  color: var(--color-primary);
+  background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-accent-purple) 100%);
+  color: #ffffff;
   font-weight: 800;
-  font-size: 14px;
+  font-size: 13px;
   display: flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
+  box-shadow: var(--shadow-primary);
 }
 
 .tableCard {
-  background: var(--color-surface);
+  background: var(--color-surface-glass);
+  backdrop-filter: var(--glass-backdrop);
+  -webkit-backdrop-filter: var(--glass-backdrop);
   border: 1px solid var(--color-border);
-  border-radius: var(--radius-lg);
-  box-shadow: var(--shadow-md);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-sm);
   overflow: hidden;
 }
 
 .heroRow {
   display: grid;
-  grid-template-columns: 200px 1fr 1fr;
+  grid-template-columns: 220px 1fr 1fr;
   background: var(--color-surface-alt);
   border-bottom: 1px solid var(--color-border);
 }
 
 .heroCell {
-  padding: 20px;
+  padding: 22px 24px;
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 14px;
 }
 
 .heroLabel {
   font-size: 12px;
-  font-weight: 700;
+  font-weight: 800;
   color: var(--color-text-muted);
   text-transform: uppercase;
-  letter-spacing: 0.6px;
+  letter-spacing: 0.8px;
 }
 
 .coinLogo {
-  width: 40px;
-  height: 40px;
+  width: 44px;
+  height: 44px;
   border-radius: 50%;
   object-fit: contain;
 }
 
 .coinName {
-  font-size: 16px;
-  font-weight: 700;
+  font-size: 18px;
+  font-weight: 800;
   color: var(--color-text-primary);
 }
 
 .coinSymbol {
   font-size: 12px;
-  font-weight: 600;
+  font-weight: 700;
   color: var(--color-text-muted);
+  letter-spacing: 0.5px;
 }
 
 .dataRow {
   display: grid;
-  grid-template-columns: 200px 1fr 1fr;
+  grid-template-columns: 220px 1fr 1fr;
   border-bottom: 1px solid var(--color-border);
-  transition: background var(--transition-fast);
+  transition: all var(--transition-fast);
 }
 
 .dataRow:last-child {
@@ -150,7 +166,7 @@
 }
 
 .labelCell {
-  padding: 18px 20px;
+  padding: 20px 24px;
   display: flex;
   align-items: center;
   background: var(--color-surface-alt);
@@ -158,13 +174,13 @@
 }
 
 .metricName {
-  font-size: 13px;
-  font-weight: 600;
+  font-size: 14px;
+  font-weight: 700;
   color: var(--color-text-secondary);
 }
 
 .valueCell {
-  padding: 18px 20px;
+  padding: 20px 24px;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -176,12 +192,12 @@
 }
 
 .winnerHighlight {
-  background: rgba(16, 185, 129, 0.04);
+  background: rgba(16, 185, 129, 0.08);
 }
 
 .valueText {
-  font-size: 15px;
-  font-weight: 700;
+  font-size: 16px;
+  font-weight: 800;
   color: var(--color-text-primary);
   font-variant-numeric: tabular-nums;
 }
@@ -190,13 +206,14 @@
 .negative { color: var(--color-danger); }
 
 .leaderBadge {
-  font-size: 10px;
-  font-weight: 700;
+  font-size: 11px;
+  font-weight: 800;
   text-transform: uppercase;
   color: var(--color-success);
   background: var(--color-success-light);
-  padding: 2px 6px;
+  padding: 3px 10px;
   border-radius: 99px;
+  border: 1px solid rgba(16, 185, 129, 0.3);
 }
 
 @media (max-width: 768px) {

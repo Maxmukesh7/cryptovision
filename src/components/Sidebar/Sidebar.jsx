@@ -72,12 +72,7 @@ function Sidebar({ collapsed }) {
         </ul>
       </nav>
 
-      <div className={styles.footer}>
-        <div className={styles.versionBadge}>
-          <span className={styles.dot} />
-          {!collapsed && <span className={styles.versionText}>v1.0.0 SaaS Pro</span>}
-        </div>
-      </div>
+
     </aside>
   )
 }

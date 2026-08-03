@@ -1,12 +1,20 @@
 .chartsContainer {
-  background: var(--color-surface);
+  background: var(--color-surface-glass);
+  backdrop-filter: var(--glass-backdrop);
+  -webkit-backdrop-filter: var(--glass-backdrop);
   border: 1px solid var(--color-border);
-  border-radius: var(--radius-lg);
-  padding: 24px;
-  box-shadow: var(--shadow-md);
+  border-radius: var(--radius-xl);
+  padding: 28px;
+  box-shadow: var(--shadow-sm);
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 24px;
+  transition: all var(--transition-base);
+}
+
+.chartsContainer:hover {
+  border-color: var(--color-border-hover);
+  box-shadow: var(--shadow-md);
 }
 
 .header {
@@ -18,32 +26,33 @@
 }
 
 .title {
-  font-size: 18px;
-  font-weight: 700;
+  font-size: 20px;
+  font-weight: 800;
   color: var(--color-text-primary);
-  letter-spacing: -0.3px;
+  letter-spacing: -0.5px;
 }
 
 .subtitle {
-  font-size: 13px;
+  font-size: 14px;
   color: var(--color-text-muted);
+  font-weight: 500;
   margin-top: 2px;
 }
 
 .tabs {
   display: flex;
   background: var(--color-surface-alt);
-  padding: 4px;
+  padding: 5px;
   border-radius: var(--radius-md);
   border: 1px solid var(--color-border);
   gap: 4px;
 }
 
 .tab {
-  padding: 6px 14px;
+  padding: 8px 18px;
   border-radius: var(--radius-sm);
   font-size: 13px;
-  font-weight: 600;
+  font-weight: 700;
   color: var(--color-text-muted);
   transition: all var(--transition-fast);
 }
@@ -55,12 +64,13 @@
 .tabActive {
   background: var(--color-surface);
   color: var(--color-primary);
-  box-shadow: var(--shadow-sm);
+  border: 1px solid var(--color-border);
+  box-shadow: var(--shadow-sm), var(--shadow-primary);
 }
 
 .chartCanvasArea {
   position: relative;
-  height: 300px;
+  height: 340px;
   width: 100%;
 }
 
@@ -81,7 +91,7 @@
   .tab {
     flex: 1;
     text-align: center;
-    padding: 6px 8px;
+    padding: 8px 10px;
     font-size: 12px;
   }
 }

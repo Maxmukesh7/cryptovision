@@ -1,0 +1,57 @@
+.brandContainer {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  user-select: none;
+}
+
+.markWrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: transform var(--transition-fast);
+}
+
+.brandContainer:hover .markWrapper {
+  transform: translateY(-1px) scale(1.04);
+}
+
+.markSvg {
+  display: block;
+}
+
+.arcPath {
+  stroke: var(--color-text-primary);
+  transition: stroke var(--transition-base);
+}
+
+.arrowPath {
+  stroke: var(--color-primary);
+  transition: stroke var(--transition-base);
+}
+
+.wordmark {
+  font-family: var(--font-display);
+  font-size: 19px;
+  line-height: 1;
+  letter-spacing: -0.4px;
+  display: flex;
+  align-items: center;
+}
+
+.cryptoText {
+  font-weight: 700;
+  color: var(--color-text-primary);
+}
+
+.visionText {
+  font-weight: 800;
+  color: var(--color-primary);
+}
+
+@media (max-width: 480px) {
+  .wordmark {
+    display: none;
+  }
+}
