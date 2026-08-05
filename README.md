@@ -1,161 +1,334 @@
-# CryptoVision 🚀 | Cryptocurrency Analytics Dashboard
+# 🚀 CryptoVision - Cryptocurrency Analytics Dashboard
 
-**CryptoVision** is a production-ready, high-performance Cryptocurrency Analytics Dashboard built with **React.js**, **Vite**, **Chart.js**, and **Vanilla CSS Modules**. It delivers real-time market data, macro statistics, interactive visual charts, customizable widget layouts, watchlist tracking, side-by-side asset comparison, and a portfolio simulator.
+CryptoVision is a modern cryptocurrency analytics dashboard built using **React.js**, **Vite**, **Chart.js**, and the **CoinPaprika REST API**. It provides users with live cryptocurrency market insights through an intuitive, responsive, and interactive dashboard.
 
----
+🔗 **Live Demo:** https://cryptovision-rouge.vercel.app/
 
-## 🌟 Key Features
-
-### 📊 1. Market Intelligence & Global Stats
-- **Macro Market Overview:** Global Market Cap, 24H Trading Volume, Bitcoin Dominance (%), Ethereum Dominance (%), Active Cryptocurrencies, and Exchange counts.
-- **Six Top Analytics Cards:** Instant visibility into Total Cryptos, Global Market Cap, Global Volume, BTC Dominance, 24H Top Gainer, and 24H Top Loser.
-- **Top 10 Trending Coins:** Real-time momentum ranking based on volume and price volatility.
-- **Market Sentiment Gauge:** Fear & Greed community sentiment meter with Bullish/Bearish percentage breakdown.
-
-### 📈 2. Interactive Charts & Data Visualization
-- **Bar Chart:** Market Cap breakdown across top 10 cryptocurrencies.
-- **Doughnut Chart:** Market Cap distribution showing Top 5 assets + "Others" allocation.
-- **Line Chart:** Logarithmic price trend comparison over key market leaders.
-- **7-Day Coin History:** Interactive price action chart powered by Chart.js.
-
-### 🔍 3. Advanced Search, Filtering & Sorting
-- **Instant Search:** Search assets by name or symbol with recent search history memory (`localStorage`).
-- **Column Header Sorting:** Sort table rows by Market Cap, Price, 24H Change, or Alphabetical (Ascending/Descending).
-- **Limit Selectors:** View Top 10, Top 25, Top 50, or Top 100 cryptocurrencies.
-
-### ⭐️ 4. Watchlist & Favorites
-- Bookmark favorite cryptocurrencies with star toggles.
-- Dedicated `/watchlist` page with instant persistence and empty state fallbacks.
-
-### ⚔️ 5. Side-by-Side Asset Comparison (`/compare`)
-- Compare any two cryptocurrencies across Price, Market Cap, 24H Volume, Rank, 24H Change, and Supply metrics with automatic **Leader** highlights.
-
-### 💼 6. Portfolio Simulator (`/portfolio`)
-- Enter holdings quantity for any asset.
-- Live calculation of **Total Balance ($)**, **Total 24H Profit/Loss ($ & %)**, and individual asset holdings value.
-
-### 🌗 7. Light / Dark Mode & Customization
-- **Theme Switcher:** Navbar toggle switching between Light and Dark mode (`[data-theme='dark']`).
-- **Custom Dashboard Layout:** Show or hide any dashboard widget (Global Stats, Trending, Sentiment, Charts, Table, News).
-- **Export Data:** Download Watchlist and Portfolio data in `.csv` or `.json` formats.
+📂 **GitHub Repository:** https://github.com/Maxmukesh7/cryptovision
 
 ---
 
-## 🛠️ Tech Stack
+# 📸 Screenshots
 
-- **Core:** React 18, Vite
-- **Routing:** React Router DOM v6 (Client-side SPA with `React.lazy` code splitting)
-- **HTTP Client:** Axios with timeout configurations and multi-tier API fallbacks
-- **Data Visualization:** Chart.js, React-ChartJS-2
-- **Styling:** Modular CSS Modules, CSS Custom Properties (Variables)
-- **State Management:** React Context API (`AppProvider`), custom hooks (`useCoins`, `useCoinDetails`, `useAutoRefresh`)
-- **Persistence:** LocalStorage API (`cv_theme`, `cv_watchlist`, `cv_portfolio`, `cv_search_history`, `cv_dashboard_layout`)
+## Dashboard
+
+> *(Add screenshot here later)*
+
+![Dashboard](screenshots/dashboard.png)
+
+## Coin Details
+
+![Coin Details](screenshots/coin-details.png)
+
+## Portfolio
+
+![Portfolio](screenshots/portfolio.png)
+
+## Watchlist
+
+![Watchlist](screenshots/watchlist.png)
 
 ---
 
-## 📁 Project Structure
+# 📌 Project Overview
+
+CryptoVision fetches live cryptocurrency market data from the **CoinPaprika REST API** and presents it through a clean and interactive dashboard.
+
+The application allows users to:
+
+- View live cryptocurrency prices
+- Analyze market statistics
+- Compare cryptocurrencies
+- Maintain a personal watchlist
+- Simulate a cryptocurrency portfolio
+- Visualize market trends using charts
+- Switch between Light and Dark themes
+
+---
+
+# ✨ Features
+
+## 📊 Dashboard
+
+- Global cryptocurrency market overview
+- Market capitalization
+- Trading volume
+- Bitcoin dominance
+- Ethereum dominance
+- Active cryptocurrencies
+- Exchange statistics
+
+---
+
+## 📈 Charts & Analytics
+
+- Interactive Bar Chart
+- Doughnut Chart
+- Line Chart
+- Historical Price Chart
+- Market trend visualization
+
+---
+
+## 🔍 Search & Filtering
+
+- Search cryptocurrencies by name
+- Search by symbol
+- Sort by:
+  - Price
+  - Market Cap
+  - Rank
+  - 24H Change
+- View Top 10, Top 25, Top 50 and Top 100 cryptocurrencies
+
+---
+
+## ⭐ Watchlist
+
+- Add favorite cryptocurrencies
+- Remove favorites
+- Persistent storage using LocalStorage
+
+---
+
+## ⚔ Compare Coins
+
+Compare two cryptocurrencies side-by-side based on:
+
+- Current Price
+- Market Cap
+- Rank
+- Trading Volume
+- Supply
+- 24H Performance
+
+---
+
+## 💼 Portfolio Simulator
+
+Users can:
+
+- Add holdings
+- Track portfolio value
+- View profit/loss
+- Calculate asset allocation
+
+---
+
+## 🌙 Theme Support
+
+- Light Mode
+- Dark Mode
+
+Theme preference is stored using LocalStorage.
+
+---
+
+## 📤 Data Export
+
+Export Watchlist and Portfolio as:
+
+- CSV
+- JSON
+- PDF
+
+---
+
+# 🏗 System Architecture
+
+```
+                User
+                  │
+                  ▼
+        React.js Frontend
+                  │
+          HTTP GET Requests
+                  │
+                  ▼
+     CoinPaprika REST API
+                  │
+             JSON Response
+                  │
+                  ▼
+       React Components
+                  │
+                  ▼
+          Dashboard UI
+```
+
+---
+
+# 🛠 Tech Stack
+
+## Frontend
+
+- React.js
+- Vite
+- JavaScript (ES6+)
+- CSS Modules
+
+## API
+
+- CoinPaprika REST API
+
+## Charts
+
+- Chart.js
+- React ChartJS 2
+
+## Routing
+
+- React Router DOM
+
+## State Management
+
+- React Context API
+- Custom React Hooks
+
+## HTTP Client
+
+- Axios
+
+## Storage
+
+- LocalStorage
+
+## Deployment
+
+- Vercel
+
+## Version Control
+
+- Git
+- GitHub
+
+---
+
+# 📂 Project Structure
 
 ```
 cryptovision/
+│
 ├── public/
-│   ├── favicon.svg
-│   └── _redirects              # Netlify SPA route fallback
 ├── src/
-│   ├── assets/                 # SVGs and static brand assets
+│   ├── assets/
 │   ├── components/
-│   │   ├── CoinTable/          # Searchable, sortable crypto table with Star toggles
-│   │   ├── CryptoNews/         # 10 latest Web3 news cards with source badges
-│   │   ├── DashboardCard/      # Analytics stat cards
-│   │   ├── DashboardCharts/    # Bar, Doughnut, Line Chart.js components
-│   │   ├── DashboardCustomizer/# Widget visibility popover
-│   │   ├── ErrorBoundary/      # Class-based React Error Boundary
-│   │   ├── ErrorState/         # Friendly API error UI with retry action
-│   │   ├── GlobalOverview/     # Macro market stats section
-│   │   ├── Layout/             # Main layout with Navbar, Sidebar, Content outlet
-│   │   ├── Loader/             # Animated loader
-│   │   ├── MarketSentiment/    # Sentiment gauge & quick market highlights
-│   │   ├── Navbar/             # Header bar with Brand, Search, Theme toggle
-│   │   ├── PriceChart/         # 7-day detail price chart
-│   │   ├── Sidebar/            # Collapsible navigation sidebar
-│   │   ├── Skeleton/           # Shimmer skeleton loaders for cards, table, charts
-│   │   ├── Toast/              # Floating toast notification system
-│   │   └── TopMovers/          # Top 5 Gainers & Top 5 Losers split cards
 │   ├── context/
-│   │   └── AppContext.jsx      # Global state for theme, watchlist, portfolio, toasts
 │   ├── hooks/
-│   │   ├── useAutoRefresh.js   # 60s background data poller with cleanup locks
-│   │   ├── useCoinDetails.js   # Coin detail & chart fetcher
-│   │   └── useCoins.js         # Top 100 coins fetcher
 │   ├── pages/
-│   │   ├── CoinDetails/        # Dynamic coin detail view (/coin/:id)
-│   │   ├── Compare/            # Side-by-side asset comparison (/compare)
-│   │   ├── Dashboard/          # Main analytics platform (/)
-│   │   ├── NotFound/           # Animated 404 page
-│   │   ├── Portfolio/          # Portfolio simulator (/portfolio)
-│   │   ├── Settings/           # Preferences, theme, currency, exports (/settings)
-│   │   └── Watchlist/          # Bookmarked coins table (/watchlist)
 │   ├── services/
-│   │   └── cryptoApi.js        # Multi-tiered API service (CoinPaprika + Fallbacks + Cache)
 │   ├── styles/
-│   │   └── global.css          # CSS Variables for Light & Dark mode
 │   ├── utils/
-│   │   ├── cache.js            # 60s TTL LocalStorage caching module
-│   │   └── formatters.js       # Currency, percentage, large number formatters
-│   ├── App.jsx                 # App routes with Suspense & ErrorBoundary
+│   ├── App.jsx
 │   └── main.jsx
-├── vercel.json                 # Vercel SPA route rewrite
+│
+├── vercel.json
+├── package.json
 └── README.md
 ```
 
 ---
 
-## ⚡ Quick Start Guide
+# 🚀 Installation
 
-### Prerequisites
-- Node.js `v18.0.0` or higher
-- npm `v9.0.0` or higher
+## Clone Repository
 
-### Installation
+```bash
+git clone https://github.com/Maxmukesh7/cryptovision.git
+```
 
-1. **Clone the repository:**
-   ```bash
-   git clone https://github.com/username/cryptovision.git
-   cd cryptovision
-   ```
+Move into the project
 
-2. **Install dependencies:**
-   ```bash
-   npm install
-   ```
+```bash
+cd cryptovision
+```
 
-3. **Start the local development server:**
-   ```bash
-   npm run dev
-   ```
-   Open `http://localhost:5173` in your browser.
+Install dependencies
 
-4. **Build for production:**
-   ```bash
-   npm run build
-   ```
+```bash
+npm install
+```
 
----
+Run locally
 
-## 🚀 Deployment Instructions
+```bash
+npm run dev
+```
 
-### Deploy to Vercel
-1. Push code to GitHub.
-2. Import repository in Vercel.
-3. Vercel automatically detects Vite. Build command: `npm run build`, Output directory: `dist`.
-4. `vercel.json` included in root handles SPA route rewrites automatically.
+Build for production
 
-### Deploy to Netlify
-1. Import repository in Netlify.
-2. Build command: `npm run build`, Publish directory: `dist`.
-3. `public/_redirects` handles SPA client-side routing.
+```bash
+npm run build
+```
 
 ---
 
-## 📜 License
+# 🌐 Deployment
 
-Distributed under the MIT License. See `LICENSE` for more information.
+This project is deployed on **Vercel**.
+
+Deployment Steps:
+
+1. Push the project to GitHub.
+2. Import the repository into Vercel.
+3. Vercel automatically detects the Vite framework.
+4. Deploy.
+
+Live Project:
+
+https://cryptovision-rouge.vercel.app/
+
+---
+
+# 📚 What I Learned
+
+Through this project, I gained practical experience in:
+
+- React.js Component Architecture
+- REST API Integration
+- HTTP Requests using Axios
+- JSON Data Handling
+- React Router
+- State Management using Context API
+- Custom React Hooks
+- Chart.js Integration
+- LocalStorage
+- Responsive UI Design
+- Git & GitHub Workflow
+- Vercel Deployment
+
+---
+
+# 🎯 Future Enhancements
+
+- User Authentication
+- Real-time WebSocket Updates
+- Price Alerts
+- AI Market Insights
+- News Sentiment Analysis
+- Portfolio Performance Analytics
+- Multiple Currency Support
+
+---
+
+# 📄 License
+
+This project is licensed under the MIT License.
+
+---
+
+# 👨‍💻 Developer
+
+**Mukesh Kumar**
+
+BE Cyber Security
+
+GitHub:
+https://github.com/Maxmukesh7
+
+LinkedIn:
+(Add your LinkedIn URL)
+
+---
+
+⭐ If you found this project useful, consider giving it a Star on GitHub!
